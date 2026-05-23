@@ -1,0 +1,4 @@
+control_key,control_type,x_col,y_col,n,r,r_ci_low,r_ci_high,p,p_formatted
+meta_monitor_strength,strength,meta_monitor_strength,hard_self_without_lesion,24,0.8867600694172955,0.8455549233610034,0.9453146712538563,7.944600934088334e-09,7.9e-09
+meta_monitor_noise,noise,meta_monitor_noise,hard_self_without_lesion,12,-0.9739988788071975,-0.9916887619169263,-0.9517439345119565,8.959771937277222e-08,9.0e-08
+meta_monitor_delay,delay,meta_monitor_delay,hard_self_without_lesion,12,-0.22926726184970225,-0.6824173521843737,0.20590186301899321,0.473505915175116,0.4735

@@ -1,0 +1,351 @@
+{
+  "schema_version": "benchmark-online-v1",
+  "run_id": "online_20260522_173251",
+  "created_at": "2026-05-22T18:25:09+08:00",
+  "condition_sets": [
+    "thalamus",
+    "distributed",
+    "meta-strength",
+    "meta-noise",
+    "meta-delay"
+  ],
+  "conditions": [
+    {
+      "condition_set": "thalamus",
+      "architecture": "thalamus",
+      "condition": "W-A-",
+      "config": {
+        "workspace_capacity": 96,
+        "initial_threshold": 0.52,
+        "inhibition_strength": 0.45,
+        "threshold_adaptation_rate": 0.08,
+        "dim": 32,
+        "measurement_window": 128,
+        "enable_workspace": false,
+        "enable_action_loop": false,
+        "action_loop_variant": "none"
+      }
+    },
+    {
+      "condition_set": "thalamus",
+      "architecture": "thalamus",
+      "condition": "W+A-",
+      "config": {
+        "workspace_capacity": 96,
+        "initial_threshold": 0.52,
+        "inhibition_strength": 0.45,
+        "threshold_adaptation_rate": 0.08,
+        "dim": 32,
+        "measurement_window": 128,
+        "enable_workspace": true,
+        "enable_action_loop": false,
+        "action_loop_variant": "none"
+      }
+    },
+    {
+      "condition_set": "thalamus",
+      "architecture": "thalamus",
+      "condition": "W-A+",
+      "config": {
+        "workspace_capacity": 96,
+        "initial_threshold": 0.52,
+        "inhibition_strength": 0.45,
+        "threshold_adaptation_rate": 0.08,
+        "dim": 32,
+        "measurement_window": 128,
+        "enable_workspace": false,
+        "enable_action_loop": true,
+        "action_loop_variant": "learning"
+      }
+    },
+    {
+      "condition_set": "thalamus",
+      "architecture": "thalamus",
+      "condition": "W+A+",
+      "config": {
+        "workspace_capacity": 96,
+        "initial_threshold": 0.52,
+        "inhibition_strength": 0.45,
+        "threshold_adaptation_rate": 0.08,
+        "dim": 32,
+        "measurement_window": 128,
+        "enable_workspace": true,
+        "enable_action_loop": true,
+        "action_loop_variant": "learning"
+      }
+    },
+    {
+      "condition_set": "distributed",
+      "architecture": "distributed",
+      "condition": "feedback_off",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": false
+      }
+    },
+    {
+      "condition_set": "distributed",
+      "architecture": "distributed",
+      "condition": "feedback_on",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true
+      }
+    },
+    {
+      "condition_set": "meta-strength",
+      "architecture": "distributed",
+      "condition": "meta_strength_0.0",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 0.0
+      }
+    },
+    {
+      "condition_set": "meta-strength",
+      "architecture": "distributed",
+      "condition": "meta_strength_0.2",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 0.2
+      }
+    },
+    {
+      "condition_set": "meta-strength",
+      "architecture": "distributed",
+      "condition": "meta_strength_0.4",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 0.4
+      }
+    },
+    {
+      "condition_set": "meta-strength",
+      "architecture": "distributed",
+      "condition": "meta_strength_0.6",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 0.6
+      }
+    },
+    {
+      "condition_set": "meta-strength",
+      "architecture": "distributed",
+      "condition": "meta_strength_0.8",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 0.8
+      }
+    },
+    {
+      "condition_set": "meta-strength",
+      "architecture": "distributed",
+      "condition": "meta_strength_1.0",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 1.0
+      }
+    },
+    {
+      "condition_set": "meta-noise",
+      "architecture": "distributed",
+      "condition": "meta_noise_0.0",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 1.0,
+        "meta_monitor_noise": 0.0
+      }
+    },
+    {
+      "condition_set": "meta-noise",
+      "architecture": "distributed",
+      "condition": "meta_noise_0.2",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 1.0,
+        "meta_monitor_noise": 0.2
+      }
+    },
+    {
+      "condition_set": "meta-noise",
+      "architecture": "distributed",
+      "condition": "meta_noise_0.4",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 1.0,
+        "meta_monitor_noise": 0.4
+      }
+    },
+    {
+      "condition_set": "meta-noise",
+      "architecture": "distributed",
+      "condition": "meta_noise_0.6",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 1.0,
+        "meta_monitor_noise": 0.6
+      }
+    },
+    {
+      "condition_set": "meta-delay",
+      "architecture": "distributed",
+      "condition": "meta_delay_0",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 1.0,
+        "meta_monitor_delay": 0
+      }
+    },
+    {
+      "condition_set": "meta-delay",
+      "architecture": "distributed",
+      "condition": "meta_delay_2",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 1.0,
+        "meta_monitor_delay": 2
+      }
+    },
+    {
+      "condition_set": "meta-delay",
+      "architecture": "distributed",
+      "condition": "meta_delay_4",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 1.0,
+        "meta_monitor_delay": 4
+      }
+    },
+    {
+      "condition_set": "meta-delay",
+      "architecture": "distributed",
+      "condition": "meta_delay_8",
+      "config": {
+        "num_agents": 12,
+        "world_size": 52,
+        "sensor_range": 6,
+        "memory_capacity": 512,
+        "measurement_window": 128,
+        "enable_action_feedback": true,
+        "enable_coordination": true,
+        "enable_meta_monitor": true,
+        "meta_monitor_strength": 1.0,
+        "meta_monitor_delay": 8
+      }
+    }
+  ],
+  "seeds_per_condition": 16,
+  "seed_base": 20260521,
+  "warmup": 128,
+  "quick": false,
+  "bootstrap": 2000,
+  "row_count": 320,
+  "files": {
+    "raw": "runs\\benchmark_online_supplementary\\online_20260522_173251\\online_benchmark_raw.csv",
+    "condition_summary": "runs\\benchmark_online_supplementary\\online_20260522_173251\\condition_summary.csv",
+    "construct_validation_stats": "runs\\benchmark_online_supplementary\\online_20260522_173251\\construct_validation_stats.csv",
+    "mechanism_effects": "runs\\benchmark_online_supplementary\\online_20260522_173251\\mechanism_effects.csv",
+    "control_correlations": "runs\\benchmark_online_supplementary\\online_20260522_173251\\control_correlations.csv",
+    "report": "runs\\benchmark_online_supplementary\\online_20260522_173251\\report.md"
+  },
+  "claim_boundary": "Operational construct validation only; not a detector of subjective consciousness."
+}

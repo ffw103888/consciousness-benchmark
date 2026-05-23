@@ -1,0 +1,5 @@
+diagnostic,x,y,n,r,r_ci_low,r_ci_high,p,p_formatted,validated
+proxy_vs_generic_boundary,proxy_boundary_self,generic_boundary_probe,40,0.32534202440750837,-0.02306707661372713,0.6201844558812134,0.04051105430872774,0.0405,False
+proxy_vs_hard_attention_boundary,proxy_boundary_self,hard_attention_boundary,40,0.24648859082931993,-0.022791756600117292,0.5199250296664955,0.1252109568244298,0.1252,False
+dose_vs_hard_attention_boundary,dose,hard_attention_boundary,40,0.22289674045835509,-0.0492551151896166,0.5136240716573663,0.16682294960592586,0.1668,False
+dose_vs_proxy_boundary,dose,proxy_boundary_self,40,0.7277260520069081,0.5636061578019098,0.8449581487713396,1.035567832053748e-07,1.0e-07,True

@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this benchmark or the accompanying paper, please cite this work."
+title: "Measurement Validation Reveals Five Dissociable Operational Constructs Underlying Self-Model and Agency in Artificial Neural Architectures"
+authors:
+  - family-names: "Feng"
+    given-names: "Fuwang"
+year: 2026
+license: "MIT"
+repository-code: "https://github.com/ffw103888/consciousness-benchmark"
+keywords:
+  - consciousness
+  - construct validity
+  - artificial neural architectures
+  - agency
+  - self-model
+  - benchmark
+abstract: "A benchmark and paper package for validating operational consciousness-related constructs against independent behavioral probes in artificial systems."

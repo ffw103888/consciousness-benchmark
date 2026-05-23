@@ -1,0 +1,30 @@
+{
+  "created_at": "2026-05-22T17:33:53+08:00",
+  "args": {
+    "output_root": "runs\\supplementary",
+    "capacities": "0,1,2,4,8",
+    "seeds": 16,
+    "seed_base": 20260522,
+    "warmup": 128,
+    "quick": true,
+    "bootstrap": 2000,
+    "action_loop": true
+  },
+  "capacities": [
+    0,
+    1,
+    2,
+    4,
+    8
+  ],
+  "row_count": 80,
+  "files": {
+    "raw": "runs\\supplementary\\thalamus_workspace_capacity_20260522_173251\\thalamus_workspace_capacity_raw.csv",
+    "summary": "runs\\supplementary\\thalamus_workspace_capacity_20260522_173251\\thalamus_workspace_capacity_summary.csv",
+    "stats": "runs\\supplementary\\thalamus_workspace_capacity_20260522_173251\\thalamus_workspace_capacity_stats.csv",
+    "report": "runs\\supplementary\\thalamus_workspace_capacity_20260522_173251\\thalamus_workspace_capacity_report.md",
+    "response_plot": "runs\\supplementary\\thalamus_workspace_capacity_20260522_173251\\thalamus_workspace_capacity_response.png",
+    "scatter_plot": "runs\\supplementary\\thalamus_workspace_capacity_20260522_173251\\thalamus_workspace_capacity_scatter.png"
+  },
+  "claim_boundary": "Supplementary operational diagnostics only; primary manuscript statistics remain frozen."
+}

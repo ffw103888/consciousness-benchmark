@@ -1,0 +1,25 @@
+{
+  "out_dir": "docs\\paper\\figures\\construct_validation_20260521",
+  "inputs": {
+    "agency": "runs\\measurement_validation\\validation_20260521_100404\\measurement_validation_raw.csv",
+    "boundary": "runs\\measurement_validation\\self_diagnostics_20260521_101259\\self_diagnostic_raw.csv",
+    "temporal": "runs\\measurement_validation\\temporal_self_20260521_104909\\temporal_self_raw.csv",
+    "ownership": "runs\\measurement_validation\\ownership_self_20260521_104909\\ownership_self_raw.csv",
+    "distributed": "runs\\measurement_validation\\distributed_meta_monitor_controls_20260521_110459\\distributed_meta_monitor_controls_raw.csv"
+  },
+  "construct_correlations": {
+    "Action agency": 0.8738780225858997,
+    "Boundary self": 0.9397604357376335,
+    "Identity-temporal self": 0.8503237425121628,
+    "Action ownership": 0.995878899730544,
+    "Distributed body-schema self": 0.9237221509081296
+  },
+  "distributed_control_correlations": {
+    "strength_vs_proxy_self": 0.9932408168015449,
+    "strength_vs_hard_self": 0.8867600694172955
+  },
+  "files": {
+    "construct_grid": "docs\\paper\\figures\\construct_validation_20260521\\figure_construct_validation_grid.png",
+    "distributed_controls": "docs\\paper\\figures\\construct_validation_20260521\\figure_distributed_meta_monitor_controls.png"
+  }
+}

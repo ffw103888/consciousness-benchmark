@@ -1,0 +1,9 @@
+effect_key,factor,target_construct,target_proxy,mean_diff,mean_diff_ci_low,mean_diff_ci_high,cohens_d,p,p_formatted,predicted_target
+workspace_effect_action_agency,workspace,Action agency,proxy_agency,7.720053649740155e-06,-0.30656094272088724,0.25642208131456273,1.8256300894748407e-05,0.9999591417850887,1.0000,False
+action_loop_effect_action_agency,action_loop,Action agency,proxy_agency,0.8188814063260159,0.8180429936994291,0.8198051566281105,614.3905116124946,3.3689016827594554e-41,<1e-9,True
+workspace_effect_boundary_self,workspace,Boundary self,proxy_boundary_self,0.8295925045743984,0.820730075980818,0.8376860921284296,69.10395157581198,5.1695124893929486e-45,<1e-9,True
+action_loop_effect_boundary_self,action_loop,Boundary self,proxy_boundary_self,-0.004604706002169723,-0.3087312172119271,0.2584617932936636,-0.010744567814970511,0.975957130013708,0.9760,False
+workspace_effect_identity_temporal_self,workspace,Identity-temporal self,proxy_identity_marker_persistence,0.028038667662413252,-0.037523382338285095,0.09277303607228946,0.29178687939226133,0.4160962147142665,0.4161,True
+action_loop_effect_identity_temporal_self,action_loop,Identity-temporal self,proxy_identity_marker_persistence,-0.047211354882607526,-0.10939868801637036,0.018534084969377144,-0.5018758023150014,0.16662777606267537,0.1666,False
+workspace_effect_action_ownership,workspace,Action ownership,proxy_action_attribution,7.720053649795666e-06,-0.25650026810025706,0.2564713003790358,1.8256300894879677e-05,0.9999591417850884,1.0000,False
+action_loop_effect_action_ownership,action_loop,Action ownership,proxy_action_attribution,0.8188814063260159,0.8179949022350134,0.8198110929976323,614.3905116124399,3.368901682763969e-41,<1e-9,True

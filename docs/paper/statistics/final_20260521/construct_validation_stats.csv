@@ -1,0 +1,6 @@
+construct_key,construct,n,proxy_col,independent_col,r,r_ci_low,r_ci_high,p,p_formatted,mechanism,status
+action_agency,Action agency,24,proxy_agency,independent_agency,0.8738780225858995,0.7739418708713703,0.9425495088445284,2.4420406490846683e-08,2.4e-08,action-outcome loop,validated
+boundary_self,Boundary self,24,proxy_boundary_self,independent_self_core_boundary,0.9397604357376332,0.8466493641548655,0.9935998297211263,9.870570219675866e-12,<1e-9,workspace,validated
+identity_temporal_self,Identity-temporal self,48,proxy_identity_marker_persistence,test_delayed_identity_recognition,0.8503237425121626,0.7548488142564226,0.9116539712925956,2.0437575167832742e-14,<1e-9,workspace,validated
+action_ownership,Action ownership,48,proxy_action_attribution,test_forced_choice_ownership,0.9958788997305439,0.9937216382834447,0.9980812013831624,1.3131337608871062e-49,<1e-9,action-outcome loop,validated
+distributed_body_schema_self,Distributed body-schema self,52,proxy_self_model,hard_self_without_lesion,0.9237221509081296,0.8810115376972204,0.95601300563553,1.7653745918683022e-22,<1e-9,meta-monitor,validated

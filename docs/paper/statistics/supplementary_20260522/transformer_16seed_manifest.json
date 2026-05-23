@@ -1,0 +1,46 @@
+{
+  "created_at": "2026-05-22T17:33:05+08:00",
+  "architecture": "transformer",
+  "conditions": [
+    {
+      "condition": "W-A-",
+      "workspace": false,
+      "action_loop": false
+    },
+    {
+      "condition": "W+A-",
+      "workspace": true,
+      "action_loop": false
+    },
+    {
+      "condition": "W-A+",
+      "workspace": false,
+      "action_loop": true
+    },
+    {
+      "condition": "W+A+",
+      "workspace": true,
+      "action_loop": true
+    }
+  ],
+  "args": {
+    "output_root": "runs\\supplementary",
+    "seeds": 16,
+    "seed_base": 20260522,
+    "warmup": 512,
+    "probe_steps": 128,
+    "bootstrap": 2000,
+    "d_model": 32,
+    "n_tokens": 12,
+    "workspace_capacity": 4
+  },
+  "files": {
+    "raw": "runs\\supplementary\\transformer_validation_20260522_173251\\transformer_validation_raw.csv",
+    "stats": "runs\\supplementary\\transformer_validation_20260522_173251\\construct_validation_stats.csv",
+    "effects": "runs\\supplementary\\transformer_validation_20260522_173251\\mechanism_effects.csv",
+    "summary": "runs\\supplementary\\transformer_validation_20260522_173251\\condition_summary.csv",
+    "report": "runs\\supplementary\\transformer_validation_20260522_173251\\report.md",
+    "validation_plot": "runs\\supplementary\\transformer_validation_20260522_173251\\transformer_construct_validation.png",
+    "effects_plot": "runs\\supplementary\\transformer_validation_20260522_173251\\transformer_mechanism_effects.png"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "mind_lab_night_20260520",
+  "mode": "night",
+  "seed": 20260520,
+  "sandboxed": true,
+  "data_protection": true,
+  "termination_conditions": {
+    "max_cycles": null,
+    "stop_file": "stop.flag",
+    "wall_clock_deadline": "2026-05-21T09:30:00+08:00"
+  },
+  "paths": ["alife", "distributed", "thalamus"],
+  "cycle": {
+    "alife_generations": 256,
+    "distributed_steps": 320,
+    "thalamus_steps": 384,
+    "checkpoint_every_cycles": 4
+  },
+  "alife": {
+    "world_size": 72,
+    "eval_steps": 96,
+    "record_stride": 3,
+    "behavior_dimensions": 4,
+    "bins_per_dimension": 20,
+    "mutation_rate": 0.18,
+    "mutation_strength": 0.075,
+    "batch_size": 64,
+    "workers": 8
+  },
+  "distributed": {
+    "num_agents": 12,
+    "world_size": 52,
+    "sensor_range": 6,
+    "memory_capacity": 512
+  },
+  "thalamus": {
+    "workspace_capacity": 96,
+    "initial_threshold": 0.52,
+    "inhibition_strength": 0.45,
+    "threshold_adaptation_rate": 0.08,
+    "dim": 32
+  }
+}
+

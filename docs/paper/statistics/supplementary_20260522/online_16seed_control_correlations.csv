@@ -1,0 +1,4 @@
+control_key,condition_set,x_col,y_col,n,r,r_ci_low,r_ci_high,p,p_formatted
+meta_monitor_strength,meta-strength,meta_monitor_strength,hard_self_without_lesion,96,0.8111977704258686,0.7656308686693167,0.8569509691344054,1.2574897176714845e-23,<1e-9
+meta_monitor_noise,meta-noise,meta_monitor_noise,hard_self_without_lesion,64,-0.906419653507039,-0.9431400974153779,-0.8703204739910418,6.89763126643833e-25,<1e-9
+meta_monitor_delay,meta-delay,meta_monitor_delay,hard_self_without_lesion,64,-0.4202484608385382,-0.6112657033747446,-0.2825606026812097,0.0005456290982699874,0.0005

@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "consciousness-benchmark"
+version = "0.1.0"
+description = "Operational construct-validation benchmark for artificial systems."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Fuwang Feng" }
+]
+dependencies = [
+  "numpy",
+  "pandas",
+  "scipy",
+  "matplotlib",
+  "scikit-learn",
+  "tabulate",
+  "jinja2",
+]
+
+[project.optional-dependencies]
+mind-lab = [
+  "psutil",
+  "torch",
+]
+dev = [
+  "pytest",
+  "build",
+  "twine",
+]
+
+[project.scripts]
+consciousness-benchmark = "consciousness_benchmark.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["consciousness_benchmark*"]

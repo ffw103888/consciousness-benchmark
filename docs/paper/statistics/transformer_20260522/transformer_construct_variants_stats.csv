@@ -1,0 +1,8 @@
+study,x,y,n,r,r_ci_low,r_ci_high,p,p_formatted,candidate_validated
+attention_focus_self,proxy_attention_focus_self,independent_attention_focus_self,40,0.2033163599215415,-0.1717726038171898,0.5468968263406705,0.2082825667879576,0.2083,False
+attention_focus_self,dose,independent_attention_focus_self,40,-0.05541442764859009,-0.43257673299673727,0.29409473373751854,0.7341432482144621,0.7341,False
+context_window_self,proxy_context_window_self,independent_context_window_self,40,0.1517015880947295,-0.17229558552512755,0.4448156277328715,0.3500745436345324,0.3501,False
+context_window_self,dose,independent_context_window_self,40,0.3406478772112169,0.10128821448846406,0.5659356478720149,0.03148234855591113,0.0315,False
+predictive_agency_without_boundary,proxy_agency,independent_agency,96,0.9945025721909483,0.992870125823374,0.9960490423841447,6.255894967243527e-94,<1e-9,True
+predictive_agency_without_boundary,proxy_boundary_self,independent_boundary_self,96,0.4735349645904193,0.32945410771489114,0.6008594634756711,1.100810713101266e-06,1.1e-06,False
+predictive_agency_without_boundary,independent_agency,independent_boundary_self,96,0.12895735421414473,-0.05477690494972768,0.29218302783642014,0.21049577318889623,0.2105,False

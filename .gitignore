@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local environments
+.venv/
+venv/
+env/
+.env
+.env.*
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Large/intermediate experiment outputs
+runs/
+runs_quick/
+runs_smoke/
+
+# Keep compact frozen statistics under docs/paper/statistics/.
+!docs/paper/statistics/
+!docs/paper/statistics/**
+
+# Submission QA/generated scratch files
+docs/paper/submission/qa_pages/
+docs/paper/submission/qa_contact_sheet.png
+docs/paper/*.zip
+!docs/paper/measurement_validation_submission_package.zip
+
+# LaTeX/Pandoc intermediates
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/

@@ -1,0 +1,367 @@
+{
+  "bootstrap": 10000,
+  "seed": 20260521,
+  "paths": {
+    "corrected_validation": "runs\\measurement_validation\\validation_20260521_100404\\measurement_validation_raw.csv",
+    "self_diagnostics": "runs\\measurement_validation\\self_diagnostics_20260521_101259\\self_diagnostic_raw.csv",
+    "temporal": "runs\\measurement_validation\\temporal_self_20260521_104909\\temporal_self_raw.csv",
+    "ownership": "runs\\measurement_validation\\ownership_self_20260521_104909\\ownership_self_raw.csv",
+    "distributed_controls": "runs\\measurement_validation\\distributed_meta_monitor_controls_20260521_110459\\distributed_meta_monitor_controls_raw.csv",
+    "figure_manifest": "docs\\paper\\figures\\paper_v2_20260521\\manifest.json"
+  },
+  "construct_validation": [
+    {
+      "construct_key": "action_agency",
+      "construct": "Action agency",
+      "n": 24,
+      "proxy_col": "proxy_agency",
+      "independent_col": "independent_agency",
+      "r": 0.8738780225858995,
+      "r_ci_low": 0.7739418708713703,
+      "r_ci_high": 0.9425495088445284,
+      "p": 2.4420406490846683e-08,
+      "p_formatted": "2.4e-08",
+      "mechanism": "action-outcome loop",
+      "status": "validated"
+    },
+    {
+      "construct_key": "boundary_self",
+      "construct": "Boundary self",
+      "n": 24,
+      "proxy_col": "proxy_boundary_self",
+      "independent_col": "independent_self_core_boundary",
+      "r": 0.9397604357376332,
+      "r_ci_low": 0.8466493641548655,
+      "r_ci_high": 0.9935998297211263,
+      "p": 9.870570219675866e-12,
+      "p_formatted": "<1e-9",
+      "mechanism": "workspace",
+      "status": "validated"
+    },
+    {
+      "construct_key": "identity_temporal_self",
+      "construct": "Identity-temporal self",
+      "n": 48,
+      "proxy_col": "proxy_identity_marker_persistence",
+      "independent_col": "test_delayed_identity_recognition",
+      "r": 0.8503237425121626,
+      "r_ci_low": 0.7548488142564226,
+      "r_ci_high": 0.9116539712925956,
+      "p": 2.0437575167832742e-14,
+      "p_formatted": "<1e-9",
+      "mechanism": "workspace",
+      "status": "validated"
+    },
+    {
+      "construct_key": "action_ownership",
+      "construct": "Action ownership",
+      "n": 48,
+      "proxy_col": "proxy_action_attribution",
+      "independent_col": "test_forced_choice_ownership",
+      "r": 0.9958788997305439,
+      "r_ci_low": 0.9937216382834447,
+      "r_ci_high": 0.9980812013831624,
+      "p": 1.3131337608871062e-49,
+      "p_formatted": "<1e-9",
+      "mechanism": "action-outcome loop",
+      "status": "validated"
+    },
+    {
+      "construct_key": "distributed_body_schema_self",
+      "construct": "Distributed body-schema self",
+      "n": 52,
+      "proxy_col": "proxy_self_model",
+      "independent_col": "hard_self_without_lesion",
+      "r": 0.9237221509081296,
+      "r_ci_low": 0.8810115376972204,
+      "r_ci_high": 0.95601300563553,
+      "p": 1.7653745918683022e-22,
+      "p_formatted": "<1e-9",
+      "mechanism": "meta-monitor",
+      "status": "validated"
+    }
+  ],
+  "mechanism_effects": [
+    {
+      "mechanism": "workspace",
+      "target_construct": "Boundary self",
+      "n_paired_diffs": 0,
+      "n_off": 8,
+      "n_on": 8,
+      "mean_diff": 0.467891812235273,
+      "mean_diff_ci_low": 0.4346692821640991,
+      "mean_diff_ci_high": 0.49630622481801423,
+      "paired_cohens_dz": NaN,
+      "independent_cohens_d": 9.667801895022658,
+      "p": 2.441932944202979e-07,
+      "p_formatted": "2.4e-07",
+      "effect_key": "workspace_effect_boundary_self"
+    },
+    {
+      "mechanism": "action_loop",
+      "target_construct": "Boundary self",
+      "n_paired_diffs": 0,
+      "n_off": 8,
+      "n_on": 8,
+      "mean_diff": -0.04525551947244588,
+      "mean_diff_ci_low": -0.0781478174499623,
+      "mean_diff_ci_high": -0.015689824622360543,
+      "paired_cohens_dz": NaN,
+      "independent_cohens_d": -0.1784613857809594,
+      "p": 0.7266388753266162,
+      "p_formatted": "0.7266",
+      "effect_key": "action_effect_boundary_self"
+    },
+    {
+      "mechanism": "workspace",
+      "target_construct": "Identity-temporal self",
+      "n_paired_diffs": 0,
+      "n_off": 16,
+      "n_on": 16,
+      "mean_diff": 0.2535483487273029,
+      "mean_diff_ci_low": 0.21131936178654007,
+      "mean_diff_ci_high": 0.28587952799642624,
+      "paired_cohens_dz": NaN,
+      "independent_cohens_d": 4.437823719697111,
+      "p": 2.1190871851274286e-09,
+      "p_formatted": "2.1e-09",
+      "effect_key": "workspace_effect_identity_temporal_self"
+    },
+    {
+      "mechanism": "action_loop",
+      "target_construct": "Identity-temporal self",
+      "n_paired_diffs": 0,
+      "n_off": 16,
+      "n_on": 16,
+      "mean_diff": 0.013086799442008525,
+      "mean_diff_ci_low": -0.02006862774473474,
+      "mean_diff_ci_high": 0.054560379162248776,
+      "paired_cohens_dz": NaN,
+      "independent_cohens_d": 0.09171205071101467,
+      "p": 0.7970995690877248,
+      "p_formatted": "0.7971",
+      "effect_key": "action_effect_identity_temporal_self"
+    },
+    {
+      "mechanism": "workspace",
+      "target_construct": "Action agency",
+      "n_paired_diffs": 0,
+      "n_off": 8,
+      "n_on": 8,
+      "mean_diff": -0.001056455761908881,
+      "mean_diff_ci_low": -0.006155290406252345,
+      "mean_diff_ci_high": 0.004904619655637821,
+      "paired_cohens_dz": NaN,
+      "independent_cohens_d": -0.0027781257112703883,
+      "p": 0.9956451741631961,
+      "p_formatted": "0.9956",
+      "effect_key": "workspace_effect_action_agency"
+    },
+    {
+      "mechanism": "action_loop",
+      "target_construct": "Action agency",
+      "n_paired_diffs": 0,
+      "n_off": 8,
+      "n_on": 8,
+      "mean_diff": 0.7113407858345744,
+      "mean_diff_ci_low": 0.7063950783819362,
+      "mean_diff_ci_high": 0.7173408613532932,
+      "paired_cohens_dz": NaN,
+      "independent_cohens_d": 116.26929921788889,
+      "p": 7.180173711946978e-15,
+      "p_formatted": "<1e-9",
+      "effect_key": "action_effect_action_agency"
+    },
+    {
+      "mechanism": "workspace",
+      "target_construct": "Action ownership",
+      "n_paired_diffs": 0,
+      "n_off": 16,
+      "n_on": 16,
+      "mean_diff": 7.036811874816529e-05,
+      "mean_diff_ci_low": -0.0002173256719733743,
+      "mean_diff_ci_high": 0.00036073345343583523,
+      "paired_cohens_dz": NaN,
+      "independent_cohens_d": 0.00014076510687434103,
+      "p": 0.9996849629688692,
+      "p_formatted": "0.9997",
+      "effect_key": "workspace_effect_action_ownership"
+    },
+    {
+      "mechanism": "action_loop",
+      "target_construct": "Action ownership",
+      "n_paired_diffs": 0,
+      "n_off": 16,
+      "n_on": 16,
+      "mean_diff": 0.9680468932304742,
+      "mean_diff_ci_low": 0.9677507052502051,
+      "mean_diff_ci_high": 0.9683316372096151,
+      "paired_cohens_dz": NaN,
+      "independent_cohens_d": 2217.0029113390065,
+      "p": 1.471214320829288e-49,
+      "p_formatted": "<1e-9",
+      "effect_key": "action_effect_action_ownership"
+    },
+    {
+      "mechanism": "meta_monitor_strength",
+      "target_construct": "Distributed body-schema self",
+      "n_paired_diffs": 8,
+      "n_off": 4,
+      "n_on": 4,
+      "mean_diff": 0.8379916004208413,
+      "mean_diff_ci_low": NaN,
+      "mean_diff_ci_high": NaN,
+      "paired_cohens_dz": NaN,
+      "independent_cohens_d": 81.11753772605331,
+      "p": 1.4242858468961623e-06,
+      "p_formatted": "1.4e-06",
+      "effect_key": "meta_monitor_strength_high_minus_low"
+    }
+  ],
+  "distributed_controls": [
+    {
+      "control_key": "meta_monitor_strength",
+      "control_type": "strength",
+      "x_col": "meta_monitor_strength",
+      "y_col": "hard_self_without_lesion",
+      "n": 24,
+      "r": 0.8867600694172955,
+      "r_ci_low": 0.8455549233610034,
+      "r_ci_high": 0.9453146712538563,
+      "p": 7.944600934088334e-09,
+      "p_formatted": "7.9e-09"
+    },
+    {
+      "control_key": "meta_monitor_noise",
+      "control_type": "noise",
+      "x_col": "meta_monitor_noise",
+      "y_col": "hard_self_without_lesion",
+      "n": 12,
+      "r": -0.9739988788071975,
+      "r_ci_low": -0.9916887619169263,
+      "r_ci_high": -0.9517439345119565,
+      "p": 8.959771937277222e-08,
+      "p_formatted": "9.0e-08"
+    },
+    {
+      "control_key": "meta_monitor_delay",
+      "control_type": "delay",
+      "x_col": "meta_monitor_delay",
+      "y_col": "hard_self_without_lesion",
+      "n": 12,
+      "r": -0.22926726184970225,
+      "r_ci_low": -0.6824173521843737,
+      "r_ci_high": 0.20590186301899321,
+      "p": 0.473505915175116,
+      "p_formatted": "0.4735"
+    }
+  ],
+  "number_consistency": [
+    {
+      "number_key": "action_agency_r",
+      "expected": 0.873878,
+      "computed": 0.8738780225858995,
+      "abs_diff": 2.258589948400669e-08,
+      "ok": true
+    },
+    {
+      "number_key": "boundary_self_r",
+      "expected": 0.93976,
+      "computed": 0.9397604357376332,
+      "abs_diff": 4.3573763319759706e-07,
+      "ok": true
+    },
+    {
+      "number_key": "identity_temporal_self_r",
+      "expected": 0.850324,
+      "computed": 0.8503237425121626,
+      "abs_diff": 2.574878373851064e-07,
+      "ok": true
+    },
+    {
+      "number_key": "action_ownership_r",
+      "expected": 0.995879,
+      "computed": 0.9958788997305439,
+      "abs_diff": 1.0026945607144455e-07,
+      "ok": true
+    },
+    {
+      "number_key": "distributed_body_schema_self_r",
+      "expected": 0.923722,
+      "computed": 0.9237221509081296,
+      "abs_diff": 1.5090812954809962e-07,
+      "ok": true
+    },
+    {
+      "number_key": "workspace_effect_boundary_self",
+      "expected": 0.467892,
+      "computed": 0.467891812235273,
+      "abs_diff": 1.8776472698878166e-07,
+      "ok": true
+    },
+    {
+      "number_key": "workspace_effect_identity_temporal_self",
+      "expected": 0.253548,
+      "computed": 0.2535483487273029,
+      "abs_diff": 3.487273029234572e-07,
+      "ok": true
+    },
+    {
+      "number_key": "workspace_effect_action_agency",
+      "expected": -0.001056,
+      "computed": -0.001056455761908881,
+      "abs_diff": 4.5576190888093823e-07,
+      "ok": true
+    },
+    {
+      "number_key": "workspace_effect_action_ownership",
+      "expected": 7e-05,
+      "computed": 7.036811874816529e-05,
+      "abs_diff": 3.6811874816529313e-07,
+      "ok": true
+    },
+    {
+      "number_key": "action_effect_boundary_self",
+      "expected": -0.045256,
+      "computed": -0.04525551947244588,
+      "abs_diff": 4.805275541155951e-07,
+      "ok": true
+    },
+    {
+      "number_key": "action_effect_identity_temporal_self",
+      "expected": 0.013087,
+      "computed": 0.013086799442008525,
+      "abs_diff": 2.005579914747535e-07,
+      "ok": true
+    },
+    {
+      "number_key": "action_effect_action_agency",
+      "expected": 0.711341,
+      "computed": 0.7113407858345744,
+      "abs_diff": 2.141654256160308e-07,
+      "ok": true
+    },
+    {
+      "number_key": "action_effect_action_ownership",
+      "expected": 0.968047,
+      "computed": 0.9680468932304742,
+      "abs_diff": 1.067695257761514e-07,
+      "ok": true
+    },
+    {
+      "number_key": "meta_monitor_strength_r",
+      "expected": 0.88676,
+      "computed": 0.8867600694172955,
+      "abs_diff": 6.941729546738884e-08,
+      "ok": true
+    },
+    {
+      "number_key": "meta_monitor_noise_r",
+      "expected": -0.973999,
+      "computed": -0.9739988788071975,
+      "abs_diff": 1.211928024602571e-07,
+      "ok": true
+    }
+  ],
+  "all_numbers_consistent": true
+}

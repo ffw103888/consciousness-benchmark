@@ -1,0 +1,12 @@
+{
+  "output_dir": "D:\\ai\\AI\u610f\u8bc6\u7814\u7a76 20260520\\docs\\paper\\figures",
+  "figures": [
+    "figure1_validation_framework.png",
+    "figure2_agency_refinement.png",
+    "figure3_action_agency_mechanism.png",
+    "figure4_self_construct_split.png",
+    "figure5_distributed_self_limitation.png",
+    "figure5_distributed_self_test_ranges.png",
+    "figure6_alife_context.png"
+  ]
+}

@@ -1,0 +1,5 @@
+construct_key,construct,proxy_col,independent_col,n,r,r_ci_low,r_ci_high,p,p_formatted,validated,expected_mechanism
+action_agency,Action agency,proxy_agency,independent_agency,32,0.9998253783052659,0.9996768568866632,0.9999465530102599,2.0238867102671888e-53,<1e-9,True,action_loop
+boundary_self,Boundary self,proxy_boundary_self,independent_boundary_self,32,0.6363960574238574,0.37273283470002055,0.8424507779032891,9.029040824579964e-05,9.0e-05,False,workspace
+identity_temporal_self,Identity-temporal self,proxy_identity_marker_persistence,independent_identity_temporal_self,32,0.802377676745238,0.6670707689173486,0.8961127435018187,3.3371957992990944e-08,3.3e-08,True,workspace
+action_ownership,Action ownership,proxy_action_attribution,independent_action_ownership,32,0.9999950328298586,0.9999904137182185,0.9999985143000988,1.3086765014468539e-76,<1e-9,True,action_loop

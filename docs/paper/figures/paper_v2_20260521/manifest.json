@@ -1,0 +1,42 @@
+{
+  "out_dir": "docs\\paper\\figures\\paper_v2_20260521",
+  "snapshot_dir": "docs\\paper\\figure_snapshots\\20260521_paper_v2",
+  "diagnostic_metrics": {
+    "agency_before": -0.859588401610626,
+    "agency_after": 0.8738780225858997,
+    "self_before": 0.7014235383416977,
+    "self_boundary_after": 0.9397604357376335,
+    "distributed_before": 0.16589151547518857,
+    "distributed_strength": 0.8867600694172955,
+    "distributed_after": 0.9237221509081296
+  },
+  "mechanism_metrics": {
+    "workspace_effect_boundary": 0.467891812235273,
+    "workspace_effect_identity_temporal": 0.2535483487273029,
+    "workspace_effect_action_agency": -0.001056455761908881,
+    "workspace_effect_action_ownership": 7.036811874816529e-05,
+    "action_effect_boundary": -0.04525551947244588,
+    "action_effect_identity_temporal": 0.013086799442008525,
+    "action_effect_action_agency": 0.7113407858345744,
+    "action_effect_action_ownership": 0.9680468932304742,
+    "meta_strength_vs_hard": 0.8867600694172955
+  },
+  "figures": [
+    "figure1_validation_framework_v2.png",
+    "figure2_diagnostic_refinement_cycles.png",
+    "figure3_five_construct_validation.png",
+    "figure4_triple_dissociation.png",
+    "figure5_distributed_graded_controls.png",
+    "figure6_transformer_diagnostics.png"
+  ],
+  "transformer_diagnostic_metrics": {
+    "stress_agency_r": 0.794683408082368,
+    "stress_ownership_r": 0.6643925274821276,
+    "learning_agency_r": 0.2658662041143413,
+    "learning_ownership_r": -0.1222917432266017,
+    "boundary_dose_proxy_r": 0.7277260520069081,
+    "boundary_proxy_hard_r": 0.2464885908293199,
+    "high_agency_low_boundary_rows": 36,
+    "high_agency_low_boundary_total": 96
+  }
+}

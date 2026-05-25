@@ -15,7 +15,6 @@ Important boundary: this project validates **operational constructs** such as ac
 - Reproducibility audit: [`docs/reproducibility_audit_20260522.md`](docs/reproducibility_audit_20260522.md)
 - Release dry-run checklist: [`docs/release_dry_run_checklist.md`](docs/release_dry_run_checklist.md)
 - FAQ: [`docs/FAQ.md`](docs/FAQ.md)
-- arXiv: forthcoming
 
 ## What Is Included
 
@@ -111,17 +110,14 @@ Supplementary robustness checks:
 
 ## Citation
 
-Replace the author and arXiv fields after the preprint is public:
+Replace the venue, DOI, and URL fields after the preprint is public:
 
 ```bibtex
 @misc{measurement_validation_constructs_2026,
   title = {Measurement Validation Reveals Five Dissociable Operational Constructs Underlying Self-Model and Agency in Artificial Neural Architectures},
   author = {Feng, Fuwang},
   year = {2026},
-  eprint = {arXiv:XXXX.XXXXX},
-  archivePrefix = {arXiv},
-  primaryClass = {cs.AI},
-  url = {https://arxiv.org/abs/XXXX.XXXXX}
+  note = {Preprint forthcoming}
 }
 ```
 

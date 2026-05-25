@@ -5,8 +5,8 @@ a clean directory without access to the ignored `runs/` tree.
 
 ## Audit Environment
 
-- Source workspace: `D:\ai\AI意识研究 20260520`
-- Clean audit copy: `D:\ai\repro_audit_20260522_clean`
+- Source workspace: repository root
+- Clean audit copy: separate temporary clone/copy without `runs/`
 - Python environment: fresh `.venv`
 - Install command: `python -m pip install -e .`
 

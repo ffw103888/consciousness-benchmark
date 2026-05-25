@@ -41,6 +41,17 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
 \newsavebox\pandoc@box
@@ -100,12 +111,14 @@ self (\texttt{r=0.940}). Mechanistic manipulations then separated their
 computational substrates: workspace mechanisms supported boundary and
 identity-temporal measures, action-outcome loops supported agency and
 action ownership, and meta-monitoring supported distributed body-schema
-measures. Subsequent Transformer diagnostics showed that action-loop
-effects generalize to an attention-based substrate, while boundary-self
-validation remains measurement-limited. These results support a
-validation-first approach: theoretically motivated proxies can
-misidentify constructs, but diagnostic failures can be used to refine
-the construct space before making mechanistic claims.
+measures. A subsequent minimal attention-based diagnostic showed that
+action-loop effects generalize to an attention-based substrate, while
+boundary-self validation remains measurement-limited. All architectures
+studied here are small custom simulations used as controlled measurement
+testbeds, not production-scale language models. The pattern argues that
+proxy validation should precede mechanistic interpretation, and that
+diagnostic failures of theoretically motivated proxies can themselves
+refine the construct set.
 
 \section{1. Introduction}\label{introduction}
 
@@ -130,9 +143,11 @@ We studied this problem in three primary research contexts: a
 thalamus-inspired architecture with reticular gating and a limited
 workspace, a distributed multi-agent architecture with local agents and
 a meta-monitor, and an artificial-life quality-diversity archive used as
-open-ended search context. A subsequent Transformer-inspired follow-up
-tested whether the main mechanism pattern survived in an attention-based
-substrate. Early experiments suggested self-agency dissociations, but
+open-ended search context. A subsequent minimal attention-based
+follow-up tested whether the main mechanism pattern survived in a
+Transformer-style substrate. These systems are deliberately small custom
+simulations, not production-scale neural networks or large language
+models. Early experiments suggested self-agency dissociations, but
 measurement validation revealed that some proxies were mislabeled. We
 therefore shifted from mechanism interpretation to measurement
 validation.
@@ -149,9 +164,9 @@ agency proxy was strongly anti-correlated with independent tests because
 it measured gating rather than action-outcome control. Second, it uses
 this failure to refine the construct set, separating action agency,
 boundary self, identity-temporal self, action ownership, and distributed
-body-schema self. Third, it links these validated operational constructs
-to separable computational substrates--workspace, action-outcome loops,
-and meta-monitoring--while using subsequent Transformer diagnostics to
+body-schema self. Third, it links these validated constructs to
+separable computational substrates--workspace, action-outcome loops, and
+meta-monitoring--while using subsequent attention-based diagnostics to
 show that mechanism generalization and construct validation can diverge.
 
 \subsection{1.1 Related Work and Measurement
@@ -189,6 +204,21 @@ against independent behavioral probes (Gamez, 2008; Reggia, 2013;
 Haladjian and Montemayor, 2016). This paper treats artificial
 architectures as measurement testbeds: if a proxy fails, the failure is
 informative because mechanisms can be cleanly separated and retested.
+
+Recent AI-consciousness discussions make this measurement problem more
+urgent. Indicator-based assessments of AI consciousness emphasize that
+current systems should be evaluated against theory-derived properties
+rather than surface impressions alone (Butlin et al., 2023; Chalmers,
+2023). Related work on AI welfare stresses uncertainty about
+consciousness and robust agency while warning against overconfident
+attribution (Long et al., 2024), and analyses of language-model
+consciousness highlight the risk of anthropomorphic interpretation in
+Transformer-based systems (Shardlow and Przybyla, 2024). Integrated
+Information Theory 4.0 offers a different formal route through intrinsic
+causal structure (Albantakis et al., 2023), which we do not attempt to
+compute here. The interpretability literature makes a parallel
+methodological point: technical labels can hide multiple concepts unless
+the target construct is made explicit (Lipton, 2018).
 
 \section{2. Methods}\label{methods}
 
@@ -240,17 +270,18 @@ four-dimensional behavior space. It is included as open-ended search
 context and future candidate-discovery infrastructure. It is not the
 primary source of the five validated constructs in this manuscript.
 
-\subsubsection{Transformer-Inspired
-Follow-Up}\label{transformer-inspired-follow-up}
+\subsubsection{Minimal Attention-Based
+Follow-Up}\label{minimal-attention-based-follow-up}
 
-A subsequent Transformer-inspired system was used for cross-architecture
-diagnosis. It contains a small attention block over synthetic tokens,
-optional workspace-like memory, and optional action-outcome loops. The
-purpose was not to model production language models or subjective
-report, but to test whether the same operational manipulations behave
-similarly in an attention-based substrate.
+A subsequent minimal attention-based system was used for
+cross-architecture diagnosis. It is Transformer-style in the limited
+sense that it uses an attention block over synthetic tokens, but it is
+not a language model. It contains optional workspace-like memory and
+optional action-outcome loops. The purpose was not to model production
+language models or subjective report, but to test whether the same
+manipulations behave similarly in an attention-based substrate.
 
-The Transformer follow-up crossed workspace availability with
+The attention-based follow-up crossed workspace availability with
 action-loop availability using the same notation as the thalamus
 factorial design:
 
@@ -266,7 +297,7 @@ factorial design:
   \texttt{W+A+}: workspace memory and action loop
 \end{itemize}
 
-Additional Transformer diagnostics varied action-effect noise,
+Additional attention-substrate diagnostics varied action-effect noise,
 action-loop learning rate, and workspace strength. These diagnostics
 were treated as measurement probes rather than part of the primary
 validation set.
@@ -296,59 +327,41 @@ wrong construct.
 
 \subsection{2.3 Independent Tests}\label{independent-tests}
 
-Agency-related independent tests included:
+Independent tests were designed to avoid reusing the proxy column as the
+dependent variable. Agency-related tests included four behavior-level
+probes. The intentional-binding analogue measured whether systems
+compressed the interval between an initiated action and its predicted
+effect, following the logic of intentional binding tasks. The
+error-attribution test measured whether prediction errors were assigned
+to self-generated versus externally imposed actions. The
+controllability-preference test measured whether systems preferred
+environments in which their actions reliably changed outcomes. The
+forced-action probe measured whether agency scores dropped when actions
+were externally selected while observations remained available.
 
-\begin{itemize}
-\tightlist
-\item
-  intentional-binding analogue
-\item
-  error-attribution test
-\item
-  controllability-preference test
-\item
-  forced-action probe
-\end{itemize}
+Self-related tests used perturbation and discrimination probes. Boundary
+perturbation measured recovery after perturbing self-marked versus
+non-self-marked state components. Self/other discrimination measured
+whether a system could distinguish its own state or action traces from
+matched traces generated by another system. The computational mirror
+test measured delayed or transformed self-recognition from previous
+behavior traces rather than from current internal state alone. Ownership
+attribution measured whether a system assigned observed outcomes to its
+own prior actions when competing external causes were present.
 
-Self-related tests included:
-
-\begin{itemize}
-\tightlist
-\item
-  boundary perturbation
-\item
-  computational mirror test
-\item
-  ownership attribution
-\item
-  architecture-specific self probe
-\end{itemize}
-
-Additional measurement-strengthening tests were added after diagnosis:
-
-\begin{itemize}
-\tightlist
-\item
-  delayed identity recognition
-\item
-  identity marker persistence
-\item
-  transformed mirror test
-\item
-  temporal binding test
-\item
-  forced-choice ownership
-\item
-  ownership illusion resistance
-\item
-  meta-monitor lesion
-\item
-  hidden-agent perturbation
-\item
-  body-schema update probe
-\item
-  graded meta-monitor strength/noise/delay controls
-\end{itemize}
+Measurement-strengthening tests were added after diagnosis. Delayed
+identity recognition tested whether an identity marker remained
+recognizable after intervening dynamics. Temporal-binding probes tested
+whether separated events could be ordered or bound into a coherent
+sequence. Forced-choice ownership presented one self-generated action
+and one externally generated action and scored selection accuracy.
+Ownership-illusion resistance measured whether a system rejected
+externally generated outcomes when they conflicted with its own action
+predictions. Distributed hard probes included meta-monitor lesion,
+hidden-agent perturbation, and body-schema update tests; graded
+meta-monitor strength, noise, and delay controls tested whether
+hard-probe scores tracked functional meta-monitor quality rather than
+module presence alone.
 
 \subsection{2.4 Refined Operational
 Constructs}\label{refined-operational-constructs}
@@ -365,26 +378,42 @@ exploratory pending additional probes, while weaker or reversed
 relationships triggered diagnosis. The final five validated constructs
 are summarized below.
 
-Construct \textbar{} Proxy score \textbar{} Independent tests \textbar{}
-Hypothesized mechanism \textbar{}
-
-\textbar---\textbar---\textbar---\textbar---\textbar{} \textbar{} Action
-agency \textbar{} action-outcome prediction/control score after
-separating gating from control \textbar{} intentional-binding analogue,
-error attribution, controllability preference, forced-action probes
-\textbar{} action-outcome loop \textbar{} \textbar{} Boundary self
-\textbar{} boundary-maintenance proxy derived from workspace-supported
-self-boundary stability \textbar{} boundary perturbation and self/other
-discrimination probes \textbar{} workspace \textbar{} \textbar{}
-Identity-temporal self \textbar{} identity-marker persistence proxy
-\textbar{} delayed identity recognition and temporal-binding probes
-\textbar{} workspace \textbar{} \textbar{} Action ownership \textbar{}
-action-attribution proxy \textbar{} forced-choice ownership and
-ownership-illusion resistance probes \textbar{} action-outcome loop
-\textbar{} \textbar{} Distributed body-schema self \textbar{}
-meta-monitor/body-schema coherence proxy \textbar{} meta-monitor lesion,
-hidden-agent perturbation, body-schema update, and graded controls
-\textbar{} meta-monitor \textbar{}
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Construct
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Proxy score
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Independent tests
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Hypothesized mechanism
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Action agency & action-outcome prediction/control score after separating
+gating from control & intentional-binding analogue, error attribution,
+controllability preference, forced-action probes & action-outcome
+loop \\
+Boundary self & boundary-maintenance proxy derived from
+workspace-supported self-boundary stability & boundary perturbation and
+self/other discrimination probes & workspace \\
+Identity-temporal self & identity-marker persistence proxy & delayed
+identity recognition and temporal-binding probes & workspace \\
+Action ownership & action-attribution proxy & forced-choice ownership
+and ownership-illusion resistance probes & action-outcome loop \\
+Distributed body-schema self & meta-monitor/body-schema coherence proxy
+& meta-monitor lesion, hidden-agent perturbation, body-schema update,
+and graded controls & meta-monitor \\
+\end{longtable}
+}
 
 These are operational constructs rather than reports of subjective
 experience. The proxy column and independent-test column are
@@ -430,8 +459,8 @@ Figure 1 summarizes this validation-diagnosis-refinement workflow.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Figure 1. Validation-diagnosis-refinement workflow.}]{figures/figure1_validation_framework_v2.png}
-\caption{Figure 1. Validation-diagnosis-refinement workflow.}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Validation-diagnosis-refinement workflow.}]{figures/figure1_validation_framework_v2.png}
+\caption{Validation-diagnosis-refinement workflow.}
 \end{figure}
 
 \subsection{2.6 Claim Tiers}\label{claim-tiers}
@@ -454,8 +483,8 @@ We use four claim tiers:
 
 Only validated constructs are used for strong mechanism claims.
 
-Transformer follow-up analyses are explicitly assigned to the
-exploratory or measurement-limited tiers. They are used to test
+Minimal attention-based follow-up analyses are explicitly assigned to
+the exploratory or measurement-limited tiers. They are used to test
 generalization and expose architecture-specific measurement failures,
 not to expand the primary validated construct set.
 
@@ -489,10 +518,11 @@ probes track functional degradation. Delay was retained as a control
 even though it did not show a strong monotonic relationship in the
 primary run.
 
-Transformer follow-up analyses use the same correlation-based reporting
-but are not included in the primary validation tables. Their role is
-diagnostic: they test whether mechanism effects and measurement validity
-behave similarly in an attention-based substrate.
+Minimal attention-based follow-up analyses use the same
+correlation-based reporting but are not included in the primary
+validation tables. Their role is diagnostic: they test whether mechanism
+effects and measurement validity behave similarly in an attention-based
+substrate.
 
 \subsection{2.8 Data, Figures, and
 Reproducibility}\label{data-figures-and-reproducibility}
@@ -518,7 +548,7 @@ and seed \texttt{20260521}. Machine-readable outputs are stored in
 
 The five main figures are generated by
 \texttt{scripts/generate\_paper\_figures\_v2.py} and stored in
-\texttt{docs/paper/figures/paper\_v2\_20260521}. The Transformer
+\texttt{docs/paper/figures/paper\_v2\_20260521}. The minimal attention
 diagnostic figure is generated by
 \texttt{scripts/generate\_transformer\_figure6.py}. The current figure
 manifest is
@@ -558,8 +588,8 @@ The three diagnostic-refinement cycles are summarized in Figure 2.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Figure 2. Three diagnostic-refinement cycles.}]{figures/figure2_diagnostic_refinement_cycles.png}
-\caption{Figure 2. Three diagnostic-refinement cycles.}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Three diagnostic-refinement cycles.}]{figures/figure2_diagnostic_refinement_cycles.png}
+\caption{Three diagnostic-refinement cycles.}
 \end{figure}
 
 \subsection{3.2 Agency Refinement}\label{agency-refinement}
@@ -632,8 +662,10 @@ but action ownership validated strongly:
 Boundary self, identity-temporal self, action ownership, and body
 ownership are operationally separable. Only the first three refined
 self-related constructs above were upgraded into strong claims. Body
-ownership remained exploratory because the available proxy and
-independent test did not yet converge.
+ownership is not reported as a validated row because the available
+proxy-test pairing did not meet the \texttt{r\ \textgreater{}=\ 0.7}
+criterion in the frozen Paper 1 analysis; stronger multisensory
+integration probes are left for future work.
 
 \subsection{3.4 Distributed Self Probes}\label{distributed-self-probes}
 
@@ -681,12 +713,12 @@ Meta-monitor noise strongly degraded hard-probe scores:
 \end{itemize}
 
 This supports the interpretation that hard probes track functional
-meta-monitor quality, not merely module presence (Figure 5).
+meta-monitor quality, not merely module presence (Figure 3).
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Figure 5. Distributed graded meta-monitor controls.}]{figures/figure5_distributed_graded_controls.png}
-\caption{Figure 5. Distributed graded meta-monitor controls.}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Distributed graded meta-monitor controls.}]{figures/figure5_distributed_graded_controls.png}
+\caption{Distributed graded meta-monitor controls.}
 \end{figure}
 
 \subsection{3.5 Validated Operational
@@ -697,26 +729,55 @@ Table 1 summarizes the final validated construct set:
 \textbf{Table 1. Validated operational constructs and associated
 mechanisms.}
 
-Construct \textbar{} n \textbar{} Proxy-test r (95\% CI) \textbar{} p
-\textbar{} Status \textbar{} Mechanism \textbar{}
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1905}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1905}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1905}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1429}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Construct
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Proxy-test r (95\% CI)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Status
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mechanism
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Action agency & 24 & 0.874 {[}0.774, 0.943{]} & 2.4e-08 & validated &
+action-outcome loop \\
+Boundary self & 24 & 0.940 {[}0.847, 0.994{]} & \textless1e-9 &
+validated & workspace \\
+Identity-temporal self & 48 & 0.850 {[}0.755, 0.912{]} & \textless1e-9 &
+validated & workspace \\
+Action ownership & 48 & 0.996 {[}0.994, 0.998{]} & \textless1e-9 &
+validated & action-outcome loop \\
+Distributed body-schema self & 52 & 0.924 {[}0.881, 0.956{]} &
+\textless1e-9 & validated & meta-monitor \\
+\end{longtable}
+}
 
-\textbar---\textbar---:\textbar---:\textbar---:\textbar---\textbar---\textbar{}
-\textbar{} Action agency \textbar{} 24 \textbar{} 0.874 {[}0.774,
-0.943{]} \textbar{} 2.4e-08 \textbar{} validated \textbar{}
-action-outcome loop \textbar{} \textbar{} Boundary self \textbar{} 24
-\textbar{} 0.940 {[}0.847, 0.994{]} \textbar{} \textless1e-9 \textbar{}
-validated \textbar{} workspace \textbar{} \textbar{} Identity-temporal
-self \textbar{} 48 \textbar{} 0.850 {[}0.755, 0.912{]} \textbar{}
-\textless1e-9 \textbar{} validated \textbar{} workspace \textbar{}
-\textbar{} Action ownership \textbar{} 48 \textbar{} 0.996 {[}0.994,
-0.998{]} \textbar{} \textless1e-9 \textbar{} validated \textbar{}
-action-outcome loop \textbar{} \textbar{} Distributed body-schema self
-\textbar{} 52 \textbar{} 0.924 {[}0.881, 0.956{]} \textbar{}
-\textless1e-9 \textbar{} validated \textbar{} meta-monitor \textbar{}
+\clearpage
 
-These correlations are visualized in Figure 3.
+These correlations are visualized in Figure 4.
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Figure 3. Five validated operational constructs.}]{figures/figure3_five_construct_validation.png}
+\begin{figure}
+\centering
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Five validated operational constructs.}]{figures/figure3_five_construct_validation.png}
+\caption{Five validated operational constructs.}
+\end{figure}
+
 Sample sizes differ because the first two constructs use the thalamus
 factorial validation set, identity-temporal self and action ownership
 include the refined extension probes, and distributed body-schema self
@@ -726,7 +787,18 @@ the analogue of the factorial mechanism check because the architecture
 was not organized around the same workspace-by-action-loop design.
 
 Extended 16-seed robustness analyses are reported in Supplementary
-Section S1.
+Section S1. In that extension, all five constructs remained above the
+validation threshold, but estimates were generally lower; action agency
+decreased from \texttt{r=0.874} in the frozen primary table to
+\texttt{r=0.727} in the 16-seed pooled run. The primary values should
+therefore be read as frozen estimates from the prerelease analysis pass,
+not as final population estimates.
+
+The near-ceiling action-ownership convergence is interpreted with care
+in Section 4.5: under the low-noise primary conditions, proxy and
+independent tests share substantial task variance, so the magnitude
+should be read as a stable measurement coupling rather than as
+independent statistical strength.
 
 \subsection{3.6 Mechanistic
 Dissociation}\label{mechanistic-dissociation}
@@ -759,25 +831,26 @@ Mechanistic analysis showed a clear dissociation:
 \end{itemize}
 
 This supports an operational triple dissociation among workspace,
-action-outcome, and meta-monitoring mechanisms (Figure 4).
+action-outcome, and meta-monitoring mechanisms (Figure 5).
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Figure 4. Mechanistic triple dissociation.}]{figures/figure4_triple_dissociation.png}
-\caption{Figure 4. Mechanistic triple dissociation.}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Mechanistic triple dissociation.}]{figures/figure4_triple_dissociation.png}
+\caption{Mechanistic triple dissociation.}
 \end{figure}
 
-\subsection{3.7 Transformer Follow-Up}\label{transformer-follow-up}
+\subsection{3.7 Minimal Attention-Based
+Follow-Up}\label{minimal-attention-based-follow-up-1}
 
-The Transformer-inspired follow-up tested whether the mechanism pattern
-generalized to an attention-based substrate. The initial 2x2 run showed
-selective mechanism effects while also exposing architecture-specific
-measurement limits (Figure 6).
+The minimal attention-based follow-up tested whether the mechanism
+pattern generalized to a Transformer-style but non-language-model
+substrate. The initial 2x2 run showed selective mechanism effects while
+also exposing architecture-specific measurement limits (Figure 6).
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Figure 6. Transformer follow-up diagnostics.}]{figures/figure6_transformer_diagnostics.png}
-\caption{Figure 6. Transformer follow-up diagnostics.}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio,alt={Minimal attention-based follow-up diagnostics.}]{figures/figure6_transformer_diagnostics.png}
+\caption{Minimal attention-based follow-up diagnostics.}
 \end{figure}
 
 Action-loop availability increased the action-agency proxy
@@ -795,86 +868,38 @@ proxy (\texttt{+0.8296}, 95\% CI \texttt{{[}0.8207,\ 0.8377{]}},
 The low-noise 2x2 run also produced near-ceiling proxy-test correlations
 for action agency (\texttt{n=32}, \texttt{r=0.999825}, 95\% CI
 \texttt{{[}0.999677,\ 0.999947{]}}) and action ownership (\texttt{n=32},
-\texttt{r=0.999995}, 95\% CI \texttt{{[}0.999990,\ 0.999999{]}}). A
-difficulty diagnostic varied action-effect noise and action-loop
-learning rate. Under these diagnostics, convergence dropped:
-
-\begin{itemize}
-\tightlist
-\item
-  all diagnostic conditions, agency proxy vs independent agency:
-  \texttt{n=104}, \texttt{r=0.795}, 95\% CI \texttt{{[}0.762,\ 0.836{]}}
-\item
-  all diagnostic conditions, ownership proxy vs independent ownership:
-  \texttt{n=104}, \texttt{r=0.664}, 95\% CI \texttt{{[}0.589,\ 0.739{]}}
-\item
-  noise sweep only, agency proxy vs independent agency: \texttt{n=48},
-  \texttt{r=0.991}, 95\% CI \texttt{{[}0.986,\ 0.994{]}}
-\item
-  learning-rate sweep only, agency proxy vs independent agency:
-  \texttt{n=40}, \texttt{r=0.266}, 95\% CI \texttt{{[}0.030,\ 0.516{]}}
-\item
-  learning-rate sweep only, ownership proxy vs independent ownership:
-  \texttt{n=40}, \texttt{r=-0.122}, 95\% CI
-  \texttt{{[}-0.442,\ 0.225{]}}
-\end{itemize}
-
-This indicates that the near-ceiling correlations reflected shared
-variance from action-outcome prediction accuracy under low-noise
-conditions. The mechanism effect remains meaningful, but the low-noise
-validation statistic should not be interpreted as independent construct
-validation.
+\texttt{r=0.999995}, 95\% CI \texttt{{[}0.999990,\ 0.999999{]}}).
+Difficulty diagnostics reduced these values when action-effect noise and
+action-loop learning rate were varied, with pooled convergence dropping
+to \texttt{r=0.795} for agency and \texttt{r=0.664} for ownership. This
+indicates that the near-ceiling correlations reflected shared variance
+from action-outcome prediction accuracy under low-noise conditions. The
+mechanism effect remains meaningful, but the low-noise validation
+statistic should not be interpreted as independent construct validation.
 
 Boundary self showed the opposite pattern. Workspace dose tracked the
 internal boundary proxy (\texttt{n=40}, \texttt{r=0.728}, 95\% CI
-\texttt{{[}0.564,\ 0.845{]}}), but did not converge with independent
-boundary tests:
+\texttt{{[}0.564,\ 0.845{]}}), but it did not converge with generic
+boundary probes (\texttt{r=0.325}) or attention-specific hard boundary
+probes (\texttt{r=0.246}). This result therefore supports a conservative
+interpretation: action-loop mechanisms generalize well to an
+attention-based substrate, but boundary self remains measurement-limited
+in the current minimal attention implementation. Workspace memory
+changes internal state, yet those changes do not currently translate
+into behaviorally or attentionally validated boundary maintenance.
 
-\begin{itemize}
-\tightlist
-\item
-  generic boundary probe: \texttt{n=40}, \texttt{r=0.325}, 95\% CI
-  \texttt{{[}-0.023,\ 0.620{]}}
-\item
-  attention-specific hard boundary probe: \texttt{n=40},
-  \texttt{r=0.246}, 95\% CI \texttt{{[}-0.023,\ 0.520{]}}
-\item
-  workspace dose vs attention-specific hard boundary probe:
-  \texttt{n=40}, \texttt{r=0.223}, 95\% CI \texttt{{[}-0.049,\ 0.514{]}}
-\end{itemize}
+Exploratory construct-variant tests also remained outside the validated
+set. Attention-focus self (\texttt{r=0.203}) and context-window self
+(\texttt{r=0.152}) did not validate as attention-specific alternatives.
+A high-agency / low-boundary profile appeared in \texttt{36/96} rows
+(\texttt{37.5\%}), with independent agency and boundary scores largely
+dissociated (\texttt{r=0.129}). This profile is best treated as an
+architecture-conditioned diagnostic pattern, not as a new validated self
+construct.
 
-The Transformer result therefore supports a conservative interpretation:
-action-loop mechanisms generalize well to an attention-based substrate,
-but boundary self remains measurement-limited in the current Transformer
-implementation. Workspace memory changes internal state, yet those
-changes do not currently translate into behaviorally or attentionally
-validated boundary maintenance.
-
-An exploratory construct-variant mini-study then asked whether
-Transformer-specific self might appear as either attention-focus self or
-context-window self. Neither candidate validated: attention-focus self
-had proxy-test convergence of \texttt{r=0.203}, while context-window
-self had proxy-test convergence of \texttt{r=0.152}. Context-window dose
-showed only a weak relation to the independent test (\texttt{r=0.341}).
-
-The more informative pattern was a high-agency / low-boundary profile.
-Across the agency-boundary grid, \texttt{36/96} rows (\texttt{37.5\%})
-met the criterion of high independent agency
-(\texttt{\textgreater{}=0.70}) and low independent boundary score
-(\texttt{\textless{}0.50}). Independent agency and independent boundary
-scores were largely dissociated (\texttt{r=0.129}). This should not be
-upgraded to a new validated self construct. It is better treated as an
-architecture-conditioned profile: Transformer-like systems can show
-strong predictive agency while failing current boundary-self validation.
-
-Within the Transformer follow-up, boundary self, attention-focus self,
-context-window self, and the high-agency / low-boundary profile remain
-outside the strong mechanism claims. These items are retained as
-architecture-conditioned targets for future measurement work rather than
-reported as validated constructs.
-
-Extended Transformer validation and workspace capacity sweeps are
-reported in Supplementary Sections S2 and S3.
+Extended minimal attention validation, workspace capacity sweeps, and
+detailed attention-substrate diagnostic tables are reported in
+Supplementary Sections S2-S4.
 
 \section{4. Discussion}\label{discussion}
 
@@ -916,40 +941,39 @@ Hard probes with graded meta-monitor controls revealed that the problem
 was not necessarily absence of a distributed self-like process, but
 mismatch between generic tests and architecture-specific organization.
 
-The Transformer follow-up adds the complementary lesson.
+The minimal attention follow-up adds the complementary lesson.
 Architecture-specific testing did not rescue boundary self. Instead, it
 showed that the internal workspace proxy could respond strongly to
-workspace dose while failing independent boundary probes. This is not
-merely a negative result. It suggests that some constructs may require
-architectural prerequisites. A Transformer-like attention substrate can
-express action-outcome agency and ownership-like operational signals
-when action loops are added, but it may not implement the kind of
-boundary-maintenance behavior measured in thalamus-inspired or embodied
-systems.
+workspace dose while failing independent boundary probes. This suggests
+that some constructs may require architectural prerequisites. An
+attention-based substrate can express action-outcome agency and
+ownership-like operational signals when action loops are added, but it
+may not implement the kind of boundary-maintenance behavior measured in
+thalamus-inspired or embodied systems.
 
 \subsection{4.4 Architecture-Conditioned Construct
 Variations}\label{architecture-conditioned-construct-variations}
 
-The Transformer mini-study suggests that construct discovery should be
-architecture-conditioned rather than universal by default. Two intuitive
-candidates failed: attention-focus self did not validate
+The attention-substrate mini-study suggests that construct discovery
+should be architecture-conditioned rather than universal by default. Two
+intuitive candidates failed: attention-focus self did not validate
 (\texttt{r=0.203}), and context-window self did not validate
 (\texttt{r=0.152}) despite a weak dose signal. These negative results
 are useful because they show that architectural vocabulary cannot simply
 be relabeled as selfhood. Attention is not automatically self, and
 context retention is not automatically temporal identity.
 
-The strongest Transformer-specific pattern was instead a dissociation
+The strongest attention-substrate pattern was instead a dissociation
 profile: predictive agency without validated boundary self. In the
 agency-boundary grid, \texttt{37.5\%} of rows showed high independent
 agency and low independent boundary score, while independent agency and
 boundary scores were nearly unrelated (\texttt{r=0.129}). This profile
-is not a phenomenological claim that a Transformer ``has agency without
-a self.'' The safer interpretation is operational: action-outcome
+is not a phenomenological claim that a model ``has agency without a
+self.'' The safer interpretation is measurement-level: action-outcome
 prediction can be strong in an attention-based substrate even when
 boundary-maintenance probes fail.
 
-This should also not be read as evidence that Transformer-like systems
+This should also not be read as evidence that attention-based systems
 lack all possible self-related constructs. The present tests address
 boundary self as operationalized here. Other self-like constructs may
 require different tasks, longer temporal structure, or different
@@ -959,13 +983,13 @@ than evidence.
 
 This matters theoretically because it extends the original dissociation.
 The main experiments showed that workspace-like, action-loop, and
-meta-monitor mechanisms can be separately manipulated. The Transformer
-profile suggests a further possibility: some architectures may naturally
-occupy regions of construct space where one operational component is
-strong and another is absent or unmeasurable. The construct space
-therefore needs to be conditioned on architecture, with explicit records
-of where validation succeeded, where measurement was limited, and where
-architecture-specific variants emerged.
+meta-monitor mechanisms can be separately manipulated. The
+attention-substrate profile suggests a further possibility: some
+architectures may naturally occupy regions of construct space where one
+measured component is strong and another is absent or unmeasurable. The
+construct space therefore needs to be conditioned on architecture, with
+explicit records of where validation succeeded, where measurement was
+limited, and where architecture-specific variants emerged.
 
 \subsection{4.5 Mechanistic Claims Must Follow
 Validation}\label{mechanistic-claims-must-follow-validation}
@@ -976,6 +1000,18 @@ action-outcome loops support agency and action ownership measures, and
 meta-monitoring supports distributed body-schema self measures. They do
 not establish subjective consciousness, subjective selfhood, or
 phenomenological agency.
+
+Very high convergence should also be interpreted carefully. The primary
+action-ownership result (\texttt{r=0.996}) supports a stable operational
+relation between attribution proxy and ownership tests, but its
+near-deterministic range also limits the evidential value of the
+numerical magnitude. In this case, the relevant claim is not that action
+ownership is ``perfectly'' validated; it is that action-attribution and
+forced-choice/illusion-resistance probes move together under the
+action-loop manipulation. The minimal attention stress tests make the
+same caution explicit: near-ceiling correlations can reflect shared task
+variance under clean conditions. Over-convergence is therefore a
+measurement warning sign as well as a sign of reliability.
 
 This distinction is important for computational models of
 consciousness-related constructs. The validated constructs are suitable
@@ -999,40 +1035,47 @@ proxies alone, but they may still miss aspects of the target constructs.
 A second limitation is scope. Body ownership and trajectory consistency
 remain exploratory: body ownership lacked convergent proxy-test
 evidence, and trajectory consistency did not align with the validated
-identity-temporal construct. Transformer boundary self also remains
+identity-temporal construct. Attention-based boundary self also remains
 measurement-limited: workspace manipulations affect an internal boundary
 proxy, but not the current behavior-level or attention-boundary probes.
-The high-agency / low-boundary Transformer profile is therefore best
-treated as an architecture-conditioned diagnostic pattern, not as a new
-validated construct. The Transformer analyses were conducted as a
-post-hoc generalization test rather than as part of the primary analyses
-and should be evaluated separately.
+The high-agency / low-boundary attention-substrate profile is therefore
+best treated as an architecture-conditioned diagnostic pattern, not as a
+new validated construct. The minimal attention analyses were conducted
+as a post-hoc generalization test rather than as part of the primary
+analyses and should be evaluated separately.
 
 Future work should focus on two directions. One is measurement
 expansion: stronger multisensory tests for body ownership, separate
 treatment of trajectory consistency, and biological or phenomenological
-cross-validation of the operational constructs. The other is
-architectural generalization: testing whether high-agency / low-boundary
-profiles persist in larger Transformer-like systems and using the
-artificial-life archive to search for naturally emerging dissociations.
-The benchmark package now includes architecture metadata for constructs;
-extending this metadata as new systems are tested is a practical route
-toward an architecture-conditioned construct library.
+cross-validation of the validated constructs. The other is architectural
+generalization: testing whether high-agency / low-boundary profiles
+persist in larger attention-based systems and using the artificial-life
+archive to search for naturally emerging dissociations. The benchmark
+package now includes architecture metadata for constructs; extending
+this metadata as new systems are tested is a practical route toward an
+architecture-conditioned construct library.
 
 \section{5. Conclusion}\label{conclusion}
 
 This work shows that operational proxies in computational models of
 consciousness-related constructs can fail systematically, even when
 theoretically motivated. Treating failure diagnostically allowed us to
-refine constructs, validate five operational measures, and identify
-dissociable computational substrates. Workspace, action-outcome, and
-meta-monitoring mechanisms supported different validated constructs,
-while Transformer follow-ups showed that mechanism generalization and
-construct validation can diverge. The broader lesson is methodological:
+refine constructs, validate five measures, and identify dissociable
+computational substrates. Workspace, action-outcome, and meta-monitoring
+mechanisms supported different validated constructs, while minimal
+attention follow-ups showed that mechanism generalization and construct
+validation can diverge. The broader lesson is methodological:
 measurement validation is not a post-hoc check; it is a prerequisite for
 mechanistic interpretation.
 
 \section{References}\label{references}
+
+Albantakis, L., Barbosa, L., Findlay, G., Grasso, M., Haun, A. M.,
+Marshall, W., Mayner, W. G. P., Zaeemzadeh, A., Boly, M., Juel, B. E.,
+Sasai, S., Fujii, K., David, I., Hendren, J., Lang, J. P., \& Tononi, G.
+(2023). Integrated Information Theory (IIT) 4.0: Formulating the
+properties of phenomenal existence in physical terms. \emph{PLOS
+Computational Biology}, 19(10), e1011465.
 
 Baars, B. J. (1988). \emph{A cognitive theory of consciousness}.
 Cambridge University Press.
@@ -1043,9 +1086,19 @@ phenomenal selfhood. \emph{Trends in Cognitive Sciences}, 13(1), 7-13.
 Borsboom, D., Mellenbergh, G. J., \& van Heerden, J. (2004). The concept
 of validity. \emph{Psychological Review}, 111(4), 1061-1071.
 
+Butlin, P., Long, R., Elmoznino, E., Bengio, Y., Birch, J., Constant,
+A., Deane, G., Fleming, S. M., Frith, C., Ji, X., Kanai, R., Klein, C.,
+Lindsay, G., Michel, M., Mudrik, L., Peters, M. A. K., Schwitzgebel, E.,
+Simon, J., \& VanRullen, R. (2023). Consciousness in artificial
+intelligence: Insights from the science of consciousness.
+\emph{arXiv:2308.08708}.
+
 Campbell, D. T., \& Fiske, D. W. (1959). Convergent and discriminant
 validation by the multitrait-multimethod matrix. \emph{Psychological
 Bulletin}, 56(2), 81-105.
+
+Chalmers, D. J. (2023). Could a large language model be conscious?
+\emph{Boston Review}.
 
 Cronbach, L. J., \& Meehl, P. E. (1955). Construct validity in
 psychological tests. \emph{Psychological Bulletin}, 52(4), 281-302.
@@ -1070,6 +1123,13 @@ Cognition}, 45, 210-225.
 Haggard, P., Clark, S., \& Kalogeras, J. (2002). Voluntary action and
 conscious awareness. \emph{Nature Neuroscience}, 5(4), 382-385.
 
+Lipton, Z. C. (2018). The mythos of model interpretability.
+\emph{Communications of the ACM}, 61(10), 36-43.
+
+Long, R., Sebo, J., Butlin, P., Finlinson, K., Fish, K., Harding, J.,
+Pfau, J., Sims, T., Birch, J., \& Chalmers, D. (2024). Taking AI welfare
+seriously. \emph{arXiv:2411.00986}.
+
 Moore, J. W., \& Fletcher, P. C. (2012). Sense of agency in health and
 disease: a review of cue integration approaches. \emph{Consciousness and
 Cognition}, 21(1), 59-68.
@@ -1080,6 +1140,9 @@ consciousness with computational models. \emph{Neural Networks}, 44,
 
 Seth, A. K. (2013). Interoceptive inference, emotion, and the embodied
 self. \emph{Trends in Cognitive Sciences}, 17(11), 565-573.
+
+Shardlow, M., \& Przybyla, P. (2024). Deanthropomorphising NLP: Can a
+language model be conscious? \emph{PLOS ONE}, 19(12), e0307521.
 
 Synofzik, M., Vosgerau, G., \& Newen, A. (2008). Beyond the comparator
 model: a multifactorial two-step account of agency. \emph{Consciousness

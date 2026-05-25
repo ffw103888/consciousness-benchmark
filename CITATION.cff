@@ -5,7 +5,11 @@ authors:
   - family-names: "Feng"
     given-names: "Fuwang"
 year: 2026
+version: "1.0.0"
+date-released: "2026-05-25"
 license: "Apache-2.0"
+doi: "10.5281/zenodo.20372255"
+url: "https://doi.org/10.5281/zenodo.20372255"
 repository-code: "https://github.com/ffw103888/consciousness-benchmark"
 keywords:
   - consciousness
@@ -15,3 +19,14 @@ keywords:
   - self-model
   - benchmark
 abstract: "A benchmark and paper package for validating operational consciousness-related constructs against independent behavioral probes in artificial systems."
+preferred-citation:
+  type: generic
+  title: "Measurement Validation Reveals Five Dissociable Operational Constructs Underlying Self-Model and Agency in Artificial Neural Architectures"
+  authors:
+    - family-names: "Feng"
+      given-names: "Fuwang"
+  year: 2026
+  publisher:
+    name: "Zenodo"
+  doi: "10.5281/zenodo.20372255"
+  url: "https://doi.org/10.5281/zenodo.20372255"

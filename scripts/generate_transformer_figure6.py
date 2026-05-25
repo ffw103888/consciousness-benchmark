@@ -99,7 +99,7 @@ def make_figure() -> Path:
         axes[0, 0],
         ["clean\nagency", "clean\nownership", "stress\nagency", "stress\nownership", "learning\nagency", "learning\nownership"],
         [clean_agency, clean_ownership, stress_agency, stress_ownership, learning_agency, learning_ownership],
-        "A. Near-perfect Transformer validation is stress-sensitive",
+        "A. Near-perfect attention validation is stress-sensitive",
     )
 
     boundary_values = [
@@ -152,7 +152,7 @@ def make_figure() -> Path:
     axes[1, 1].set_ylim(-0.05, 0.55)
     axes[1, 1].axhline(0.7, color="#222222", linestyle="--", linewidth=1.0, alpha=0.65)
 
-    fig.suptitle("Figure 6. Transformer Diagnostics: Mechanism Generalization, Measurement Limits, and Construct Variation", fontsize=13.0, fontweight="bold")
+    fig.suptitle("Figure 6. Minimal Attention Diagnostics: Mechanism Generalization, Measurement Limits, and Construct Variation", fontsize=13.0, fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.965))
 
     out = OUT_DIR / "figure6_transformer_diagnostics.png"

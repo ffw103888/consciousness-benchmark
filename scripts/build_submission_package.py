@@ -31,27 +31,27 @@ TITLE = (
 FIGURES = {
     "Figure 1 summarizes this validation-diagnosis-refinement workflow.": (
         "figure1_validation_framework_v2.png",
-        "Figure 1. Validation-diagnosis-refinement workflow.",
+        "Validation-diagnosis-refinement workflow.",
     ),
     "The three diagnostic-refinement cycles are summarized in Figure 2.": (
         "figure2_diagnostic_refinement_cycles.png",
-        "Figure 2. Three diagnostic-refinement cycles.",
+        "Three diagnostic-refinement cycles.",
     ),
-    "This supports the interpretation that hard probes track functional meta-monitor quality, not merely module presence (Figure 5).": (
+    "This supports the interpretation that hard probes track functional meta-monitor quality, not merely module presence (Figure 3).": (
         "figure5_distributed_graded_controls.png",
-        "Figure 5. Distributed graded meta-monitor controls.",
+        "Distributed graded meta-monitor controls.",
     ),
-    "These correlations are visualized in Figure 3.": (
+    "These correlations are visualized in Figure 4.": (
         "figure3_five_construct_validation.png",
-        "Figure 3. Five validated operational constructs.",
+        "Five validated operational constructs.",
     ),
-    "This supports an operational triple dissociation among workspace, action-outcome, and meta-monitoring mechanisms (Figure 4).": (
+    "This supports an operational triple dissociation among workspace, action-outcome, and meta-monitoring mechanisms (Figure 5).": (
         "figure4_triple_dissociation.png",
-        "Figure 4. Mechanistic triple dissociation.",
+        "Mechanistic triple dissociation.",
     ),
-    "The Transformer-inspired follow-up tested whether the mechanism pattern generalized to an attention-based substrate. The initial 2x2 run showed selective mechanism effects while also exposing architecture-specific measurement limits (Figure 6).": (
+    "The minimal attention-based follow-up tested whether the mechanism pattern generalized to a Transformer-style but non-language-model substrate. The initial 2x2 run showed selective mechanism effects while also exposing architecture-specific measurement limits (Figure 6).": (
         "figure6_transformer_diagnostics.png",
-        "Figure 6. Transformer follow-up diagnostics.",
+        "Minimal attention-based follow-up diagnostics.",
     ),
 }
 
@@ -92,9 +92,6 @@ def normalize_markdown_for_submission(text: str) -> str:
     text = promote_headings(text)
     text = insert_figures(text)
     text = add_table_caption(text)
-    # Pandoc treats backtick-heavy statistical text well, but escaped arrows are
-    # safer in generated TeX/DOCX outputs when kept as plain text.
-    text = text.replace("--", "\u2013")
     return text
 
 

@@ -314,7 +314,7 @@ def figure_4_triple_dissociation(out_dir: Path) -> dict[str, float]:
     ax.set_title("D. Accuracy/timing controls", fontweight="bold")
     ax.legend(frameon=False)
 
-    fig.suptitle("Figure 4. Mechanistic dissociation across workspace, action, and meta-monitoring", y=1.0, weight="bold", fontsize=14)
+    fig.suptitle("Figure 5. Mechanistic dissociation across workspace, action, and meta-monitoring", y=1.0, weight="bold", fontsize=14)
     fig.tight_layout(rect=[0, 0, 1, 0.97])
     fig.savefig(out_dir / "figure4_triple_dissociation.png", bbox_inches="tight")
     plt.close(fig)

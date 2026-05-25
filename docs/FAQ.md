@@ -56,5 +56,5 @@ the public reference benchmark or figure scripts.
 
 ## How should I cite this work?
 
-Use the repository `CITATION.cff` or the BibTeX entry in the README. The arXiv
-identifier should be filled in after the preprint is public.
+Use the repository `CITATION.cff` or the BibTeX entry in the README. The current
+public DOI is the Zenodo record: `10.5281/zenodo.20372255`.

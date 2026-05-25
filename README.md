@@ -1,5 +1,9 @@
 # Consciousness Benchmark / Mind Lab
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20372255.svg)](https://doi.org/10.5281/zenodo.20372255)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](pyproject.toml)
+
 Official implementation of **"Measurement Validation Reveals Five Dissociable Operational Constructs Underlying Self-Model and Agency in Artificial Neural Architectures."**
 
 This repository contains the benchmark code, reference statistics, paper figures, and reproducibility scripts for an operational measurement-validation study of artificial systems.
@@ -8,6 +12,8 @@ Important boundary: this project validates **operational constructs** such as ac
 
 ## Paper
 
+- Zenodo preprint and release package: [10.5281/zenodo.20372255](https://doi.org/10.5281/zenodo.20372255)
+- PsyArXiv preprint: submitted for moderation; link will be added after public acceptance.
 - Manuscript PDF: [`docs/paper/submission/measurement_validation_submission.pdf`](docs/paper/submission/measurement_validation_submission.pdf)
 - Supplementary PDF: [`docs/paper/submission/measurement_validation_supplementary.pdf`](docs/paper/submission/measurement_validation_supplementary.pdf)
 - Submission package: [`docs/paper/measurement_validation_submission_package.zip`](docs/paper/measurement_validation_submission_package.zip)
@@ -29,11 +35,11 @@ The current benchmark release includes five validated reference constructs:
 The repository also includes:
 
 - `consciousness_benchmark/`: benchmark abstractions, validators, reference constructs, and CLI.
-- `mind_lab/`: thalamus-inspired, distributed, artificial-life, and Transformer-inspired experimental systems.
+- `mind_lab/`: thalamus-inspired, distributed, artificial-life, and minimal attention-based experimental systems.
 - `scripts/`: paper statistics, figure generation, diagnostics, and online benchmark runners.
 - `docs/paper/statistics/final_20260521/`: frozen primary statistics for the paper.
 - `docs/paper/statistics/reference_20260521/`: compact frozen raw tables used by the reference benchmark and figure scripts.
-- `docs/paper/statistics/transformer_20260522/`: compact Transformer follow-up diagnostic statistics.
+- `docs/paper/statistics/transformer_20260522/`: compact minimal attention follow-up diagnostic statistics.
 - `docs/paper/statistics/supplementary_20260522/`: supplementary 16-seed and workspace-capacity robustness statistics.
 - `docs/paper/figures/paper_v2_20260521/`: final paper figures and manifest.
 - `docs/paper/figures/supplementary_20260522/`: supplementary robustness figures.
@@ -92,7 +98,7 @@ Primary paper statistics:
 - [`distributed_control_correlations.csv`](docs/paper/statistics/final_20260521/distributed_control_correlations.csv)
 - [`number_consistency.csv`](docs/paper/statistics/final_20260521/number_consistency.csv)
 
-Transformer follow-up diagnostics:
+Minimal attention follow-up diagnostics:
 
 - [`transformer_construct_validation_stats.csv`](docs/paper/statistics/transformer_20260522/transformer_construct_validation_stats.csv)
 - [`transformer_mechanism_effects.csv`](docs/paper/statistics/transformer_20260522/transformer_mechanism_effects.csv)
@@ -110,14 +116,16 @@ Supplementary robustness checks:
 
 ## Citation
 
-Replace the venue, DOI, and URL fields after the preprint is public:
+If you use this benchmark, code, or paper package, please cite:
 
 ```bibtex
 @misc{measurement_validation_constructs_2026,
   title = {Measurement Validation Reveals Five Dissociable Operational Constructs Underlying Self-Model and Agency in Artificial Neural Architectures},
   author = {Feng, Fuwang},
   year = {2026},
-  note = {Preprint forthcoming}
+  publisher = {Zenodo},
+  doi = {10.5281/zenodo.20372255},
+  url = {https://doi.org/10.5281/zenodo.20372255}
 }
 ```
 

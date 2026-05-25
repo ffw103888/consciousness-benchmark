@@ -2,6 +2,8 @@
 
 Scope: format and traceability check only. No experiments were rerun.
 
+Terminology note: earlier audit rows and file paths used "Transformer" for the post-freeze attention-block diagnostic. The v2 manuscript renames this section "minimal attention-based follow-up" to avoid implying production-scale language models. File and directory names containing `transformer_20260522` are intentionally preserved for traceability.
+
 ## Frozen Statistics
 
 Source directory: `docs/paper/statistics/final_20260521/`
@@ -54,31 +56,31 @@ Bootstrap: 10,000 paired resamples. Seed: `20260521`.
 
 Manifest: `docs/paper/figures/paper_v2_20260521/manifest.json`.
 
-## Transformer Diagnostic Traceability
+## Minimal Attention-Based Diagnostic Traceability
 
-Transformer diagnostics are post-hoc generalization tests and are not part of the primary five-construct frozen table.
+Minimal attention diagnostics are post-hoc generalization tests and are not part of the primary five-construct frozen table.
 
 | Manuscript item | Display | Source | Status |
 |---|---|---|---|
-| clean Transformer Action agency convergence | n=32, r=0.999825 [0.999677, 0.999947] | `docs/paper/statistics/transformer_20260522/transformer_construct_validation_stats.csv::action_agency` | traced |
-| clean Transformer Action ownership convergence | n=32, r=0.999995 [0.999990, 0.999999] | `docs/paper/statistics/transformer_20260522/transformer_construct_validation_stats.csv::action_ownership` | traced |
-| Transformer mechanism effect action_loop_effect_action_agency | mean diff=+0.8189 [+0.8180, +0.8198], p=<1e-9 | `docs/paper/statistics/transformer_20260522/transformer_mechanism_effects.csv::action_loop_effect_action_agency` | traced |
-| Transformer mechanism effect action_loop_effect_action_ownership | mean diff=+0.8189 [+0.8180, +0.8198], p=<1e-9 | `docs/paper/statistics/transformer_20260522/transformer_mechanism_effects.csv::action_loop_effect_action_ownership` | traced |
-| Transformer mechanism effect action_loop_effect_boundary_self | mean diff=-0.0046 [-0.3087, +0.2585], p=0.9760 | `docs/paper/statistics/transformer_20260522/transformer_mechanism_effects.csv::action_loop_effect_boundary_self` | traced |
-| Transformer mechanism effect workspace_effect_boundary_self | mean diff=+0.8296 [+0.8207, +0.8377], p=<1e-9 | `docs/paper/statistics/transformer_20260522/transformer_mechanism_effects.csv::workspace_effect_boundary_self` | traced |
-| Transformer mechanism effect workspace_effect_action_agency | mean diff=+0.0000 [-0.3066, +0.2564], p=1.0000 | `docs/paper/statistics/transformer_20260522/transformer_mechanism_effects.csv::workspace_effect_action_agency` | traced |
-| Transformer high-correlation diagnostic all/proxy_agency_vs_independent | n=104, r=0.795 [0.762, 0.836] | `docs/paper/statistics/transformer_20260522/transformer_high_corr_stats.csv` | traced |
-| Transformer high-correlation diagnostic all/proxy_ownership_vs_independent | n=104, r=0.664 [0.589, 0.739] | `docs/paper/statistics/transformer_20260522/transformer_high_corr_stats.csv` | traced |
-| Transformer high-correlation diagnostic noise_sweep/proxy_agency_vs_independent | n=48, r=0.991 [0.986, 0.994] | `docs/paper/statistics/transformer_20260522/transformer_high_corr_stats.csv` | traced |
-| Transformer high-correlation diagnostic learning_sweep/proxy_agency_vs_independent | n=40, r=0.266 [0.030, 0.516] | `docs/paper/statistics/transformer_20260522/transformer_high_corr_stats.csv` | traced |
-| Transformer high-correlation diagnostic learning_sweep/proxy_ownership_vs_independent | n=40, r=-0.122 [-0.442, 0.225] | `docs/paper/statistics/transformer_20260522/transformer_high_corr_stats.csv` | traced |
-| Transformer boundary diagnostic dose_vs_proxy_boundary | n=40, r=0.728 [0.564, 0.845] | `docs/paper/statistics/transformer_20260522/transformer_specific_boundary_stats.csv` | traced |
-| Transformer boundary diagnostic proxy_vs_generic_boundary | n=40, r=0.325 [-0.023, 0.620] | `docs/paper/statistics/transformer_20260522/transformer_specific_boundary_stats.csv` | traced |
-| Transformer boundary diagnostic proxy_vs_hard_attention_boundary | n=40, r=0.246 [-0.023, 0.520] | `docs/paper/statistics/transformer_20260522/transformer_specific_boundary_stats.csv` | traced |
-| Transformer boundary diagnostic dose_vs_hard_attention_boundary | n=40, r=0.223 [-0.049, 0.514] | `docs/paper/statistics/transformer_20260522/transformer_specific_boundary_stats.csv` | traced |
-| Transformer variant attention_focus_self | n=40, r=0.203 [-0.172, 0.547] | `docs/paper/statistics/transformer_20260522/transformer_construct_variants_stats.csv` | traced |
-| Transformer variant context_window_self | n=40, r=0.152 [-0.172, 0.445] | `docs/paper/statistics/transformer_20260522/transformer_construct_variants_stats.csv` | traced |
-| Transformer context-window dose signal | n=40, r=0.341 [0.101, 0.566] | `docs/paper/statistics/transformer_20260522/transformer_construct_variants_stats.csv` | traced |
+| clean minimal attention Action agency convergence | n=32, r=0.999825 [0.999677, 0.999947] | `docs/paper/statistics/transformer_20260522/transformer_construct_validation_stats.csv::action_agency` | traced |
+| clean minimal attention Action ownership convergence | n=32, r=0.999995 [0.999990, 0.999999] | `docs/paper/statistics/transformer_20260522/transformer_construct_validation_stats.csv::action_ownership` | traced |
+| minimal attention mechanism effect action_loop_effect_action_agency | mean diff=+0.8189 [+0.8180, +0.8198], p=<1e-9 | `docs/paper/statistics/transformer_20260522/transformer_mechanism_effects.csv::action_loop_effect_action_agency` | traced |
+| minimal attention mechanism effect action_loop_effect_action_ownership | mean diff=+0.8189 [+0.8180, +0.8198], p=<1e-9 | `docs/paper/statistics/transformer_20260522/transformer_mechanism_effects.csv::action_loop_effect_action_ownership` | traced |
+| minimal attention mechanism effect action_loop_effect_boundary_self | mean diff=-0.0046 [-0.3087, +0.2585], p=0.9760 | `docs/paper/statistics/transformer_20260522/transformer_mechanism_effects.csv::action_loop_effect_boundary_self` | traced |
+| minimal attention mechanism effect workspace_effect_boundary_self | mean diff=+0.8296 [+0.8207, +0.8377], p=<1e-9 | `docs/paper/statistics/transformer_20260522/transformer_mechanism_effects.csv::workspace_effect_boundary_self` | traced |
+| minimal attention mechanism effect workspace_effect_action_agency | mean diff=+0.0000 [-0.3066, +0.2564], p=1.0000 | `docs/paper/statistics/transformer_20260522/transformer_mechanism_effects.csv::workspace_effect_action_agency` | traced |
+| minimal attention high-correlation diagnostic all/proxy_agency_vs_independent | n=104, r=0.795 [0.762, 0.836] | `docs/paper/statistics/transformer_20260522/transformer_high_corr_stats.csv` | traced |
+| minimal attention high-correlation diagnostic all/proxy_ownership_vs_independent | n=104, r=0.664 [0.589, 0.739] | `docs/paper/statistics/transformer_20260522/transformer_high_corr_stats.csv` | traced |
+| minimal attention high-correlation diagnostic noise_sweep/proxy_agency_vs_independent | n=48, r=0.991 [0.986, 0.994] | `docs/paper/statistics/transformer_20260522/transformer_high_corr_stats.csv` | traced |
+| minimal attention high-correlation diagnostic learning_sweep/proxy_agency_vs_independent | n=40, r=0.266 [0.030, 0.516] | `docs/paper/statistics/transformer_20260522/transformer_high_corr_stats.csv` | traced |
+| minimal attention high-correlation diagnostic learning_sweep/proxy_ownership_vs_independent | n=40, r=-0.122 [-0.442, 0.225] | `docs/paper/statistics/transformer_20260522/transformer_high_corr_stats.csv` | traced |
+| minimal attention boundary diagnostic dose_vs_proxy_boundary | n=40, r=0.728 [0.564, 0.845] | `docs/paper/statistics/transformer_20260522/transformer_specific_boundary_stats.csv` | traced |
+| minimal attention boundary diagnostic proxy_vs_generic_boundary | n=40, r=0.325 [-0.023, 0.620] | `docs/paper/statistics/transformer_20260522/transformer_specific_boundary_stats.csv` | traced |
+| minimal attention boundary diagnostic proxy_vs_hard_attention_boundary | n=40, r=0.246 [-0.023, 0.520] | `docs/paper/statistics/transformer_20260522/transformer_specific_boundary_stats.csv` | traced |
+| minimal attention boundary diagnostic dose_vs_hard_attention_boundary | n=40, r=0.223 [-0.049, 0.514] | `docs/paper/statistics/transformer_20260522/transformer_specific_boundary_stats.csv` | traced |
+| minimal attention variant attention_focus_self | n=40, r=0.203 [-0.172, 0.547] | `docs/paper/statistics/transformer_20260522/transformer_construct_variants_stats.csv` | traced |
+| minimal attention variant context_window_self | n=40, r=0.152 [-0.172, 0.445] | `docs/paper/statistics/transformer_20260522/transformer_construct_variants_stats.csv` | traced |
+| minimal attention context-window dose signal | n=40, r=0.341 [0.101, 0.566] | `docs/paper/statistics/transformer_20260522/transformer_construct_variants_stats.csv` | traced |
 | High-agency/low-boundary proxy_agency vs independent_agency | n=96, r=0.995 [0.993, 0.996] | `docs/paper/statistics/transformer_20260522/transformer_construct_variants_stats.csv` | traced |
 | High-agency/low-boundary proxy_boundary_self vs independent_boundary_self | n=96, r=0.474 [0.329, 0.601] | `docs/paper/statistics/transformer_20260522/transformer_construct_variants_stats.csv` | traced |
 | High-agency/low-boundary independent_agency vs independent_boundary_self | n=96, r=0.129 [-0.055, 0.292] | `docs/paper/statistics/transformer_20260522/transformer_construct_variants_stats.csv` | traced |
@@ -107,8 +109,8 @@ Supplementary materials were added after the primary manuscript freeze and do no
 Supplementary highlights:
 
 - 16-seed pooled online benchmark: all five constructs remain above the validation threshold.
-- Transformer 16-seed follow-up: action-loop mechanisms replicate; boundary self remains measurement-limited.
-- Workspace capacity sweeps: thalamus retains proxy-independent convergence, while Transformer boundary probes remain limited.
+- Minimal attention 16-seed follow-up: action-loop mechanisms replicate; boundary self remains measurement-limited.
+- Workspace capacity sweeps: thalamus retains proxy-independent convergence, while minimal attention boundary probes remain limited.
 
 ## Reproducibility Audit
 

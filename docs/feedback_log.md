@@ -6,6 +6,14 @@ This file tracks public feedback, private email feedback, and follow-up actions 
 
 No issues yet.
 
+Current public GitHub snapshot as of 2026-05-26:
+
+- Stars: 2
+- Forks: 0
+- Open issues: 0
+- Traffic API views: 0
+- Traffic API clones: 0
+
 ## Email Feedback
 
 No email feedback yet.
@@ -17,6 +25,13 @@ PsyArXiv status: pending moderation as of 2026-05-25.
 ## Zenodo
 
 No feedback yet.
+
+Current Zenodo snapshot as of 2026-05-26:
+
+- Views: 3
+- Unique views: 3
+- Downloads: 0
+- Unique downloads: 0
 
 ## Notes For Responses
 
@@ -30,3 +45,4 @@ No feedback yet.
 | Date | Source | Type | Summary | Action |
 |---|---|---|---|---|
 | 2026-05-25 | Release | Publication | Zenodo record and GitHub release are public; PsyArXiv is pending moderation. | Waiting for PsyArXiv DOI before outreach. |
+| 2026-05-26 | Metrics | Snapshot | Zenodo views 3, downloads 0; GitHub stars 2, forks 0, open issues 0. | Continue monitoring; hold outreach until PsyArXiv approval. |

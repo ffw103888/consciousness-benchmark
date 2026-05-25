@@ -54,3 +54,6 @@ Thumbs.db
 *.swo
 .vscode/
 .idea/
+
+# Local private notes, outreach tracking, and non-public correspondence
+local_notes/

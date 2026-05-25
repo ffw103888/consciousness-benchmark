@@ -1,5 +1,7 @@
 # Paper 1 Publication Links
 
+Last checked: 2026-05-26, Asia/Shanghai.
+
 ## Status
 
 - Zenodo: public
@@ -17,6 +19,26 @@
 
 - GitHub repository: https://github.com/ffw103888/consciousness-benchmark
 - GitHub release v1.0.0: https://github.com/ffw103888/consciousness-benchmark/releases/tag/v1.0.0
+
+## Current Public Metrics Snapshot
+
+| Source | Metric | Value |
+|---|---:|---:|
+| Zenodo | views | 3 |
+| Zenodo | unique views | 3 |
+| Zenodo | downloads | 0 |
+| Zenodo | unique downloads | 0 |
+| GitHub | stars | 2 |
+| GitHub | forks | 0 |
+| GitHub | open issues | 0 |
+| GitHub traffic API | views | 0 |
+| GitHub traffic API | clones | 0 |
+
+Notes:
+
+- Zenodo views may include author-side checks.
+- GitHub traffic can lag after a repository is made public.
+- PsyArXiv metrics are not meaningful while the preprint remains pending.
 
 ## Release Files
 

@@ -127,4 +127,6 @@ Replace the author and arXiv fields after the preprint is public:
 
 ## License
 
-Code is released under the MIT License. See [`LICENSE`](LICENSE).
+Licensed under the Apache License, Version 2.0. See [`LICENSE`](LICENSE) for details.
+
+This project includes patent protection under Apache License 2.0 Section 3.

@@ -5,7 +5,7 @@ authors:
   - family-names: "Feng"
     given-names: "Fuwang"
 year: 2026
-license: "MIT"
+license: "Apache-2.0"
 repository-code: "https://github.com/ffw103888/consciousness-benchmark"
 keywords:
   - consciousness

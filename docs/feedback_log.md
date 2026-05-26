@@ -28,10 +28,10 @@ PsyArXiv status: pending moderation as of 2026-05-25.
 
 No feedback yet.
 
-Current Zenodo snapshot as of 2026-05-26:
+Current Zenodo snapshot as of 2026-05-27:
 
-- Views: 4
-- Unique views: 4
+- Views: 5
+- Unique views: 5
 - Downloads: 0
 - Unique downloads: 0
 
@@ -50,3 +50,4 @@ Current Zenodo snapshot as of 2026-05-26:
 | 2026-05-26 | Metrics | Snapshot | Zenodo views 3, downloads 0; GitHub stars 2, forks 0, open issues 0. | Continue monitoring; hold outreach until PsyArXiv approval. |
 | 2026-05-26 | Metrics | Snapshot | Zenodo views increased to 4; downloads remain 0. GitHub unchanged at 2 stars, 0 forks, 0 issues. | Continue monitoring; hold outreach until PsyArXiv approval. |
 | 2026-05-26 | Metrics | Snapshot | GitHub traffic API backfilled 2 views and 47 clones from 34 unique cloners; stars remain 2 and issues remain 0. | Continue monitoring; investigate only if clone traffic produces issues or reproducibility questions. |
+| 2026-05-27 | Metrics | Snapshot | Zenodo views increased to 5; downloads remain 0. GitHub unchanged at 2 stars, 0 forks, 0 issues, 2 views, and 47 clones. PsyArXiv still non-public. | Continue monitoring; hold outreach until PsyArXiv approval. |

@@ -1,6 +1,6 @@
 # Paper 1 Publication Links
 
-Last checked: 2026-05-26, Asia/Shanghai.
+Last checked: 2026-05-27, Asia/Shanghai.
 
 ## Status
 
@@ -24,8 +24,8 @@ Last checked: 2026-05-26, Asia/Shanghai.
 
 | Source | Metric | Value |
 |---|---:|---:|
-| Zenodo | views | 4 |
-| Zenodo | unique views | 4 |
+| Zenodo | views | 5 |
+| Zenodo | unique views | 5 |
 | Zenodo | downloads | 0 |
 | Zenodo | unique downloads | 0 |
 | GitHub | stars | 2 |

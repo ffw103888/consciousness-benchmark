@@ -31,8 +31,10 @@ Last checked: 2026-05-26, Asia/Shanghai.
 | GitHub | stars | 2 |
 | GitHub | forks | 0 |
 | GitHub | open issues | 0 |
-| GitHub traffic API | views | 0 |
-| GitHub traffic API | clones | 0 |
+| GitHub traffic API | views | 2 |
+| GitHub traffic API | unique views | 2 |
+| GitHub traffic API | clones | 47 |
+| GitHub traffic API | unique cloners | 34 |
 
 Notes:
 

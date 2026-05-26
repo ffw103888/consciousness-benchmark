@@ -28,8 +28,8 @@ No feedback yet.
 
 Current Zenodo snapshot as of 2026-05-26:
 
-- Views: 3
-- Unique views: 3
+- Views: 4
+- Unique views: 4
 - Downloads: 0
 - Unique downloads: 0
 
@@ -46,3 +46,4 @@ Current Zenodo snapshot as of 2026-05-26:
 |---|---|---|---|---|
 | 2026-05-25 | Release | Publication | Zenodo record and GitHub release are public; PsyArXiv is pending moderation. | Waiting for PsyArXiv DOI before outreach. |
 | 2026-05-26 | Metrics | Snapshot | Zenodo views 3, downloads 0; GitHub stars 2, forks 0, open issues 0. | Continue monitoring; hold outreach until PsyArXiv approval. |
+| 2026-05-26 | Metrics | Snapshot | Zenodo views increased to 4; downloads remain 0. GitHub unchanged at 2 stars, 0 forks, 0 issues. | Continue monitoring; hold outreach until PsyArXiv approval. |

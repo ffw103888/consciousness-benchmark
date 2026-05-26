@@ -24,8 +24,8 @@ Last checked: 2026-05-26, Asia/Shanghai.
 
 | Source | Metric | Value |
 |---|---:|---:|
-| Zenodo | views | 3 |
-| Zenodo | unique views | 3 |
+| Zenodo | views | 4 |
+| Zenodo | unique views | 4 |
 | Zenodo | downloads | 0 |
 | Zenodo | unique downloads | 0 |
 | GitHub | stars | 2 |

@@ -11,10 +11,10 @@ Current public GitHub snapshot as of 2026-05-26:
 - Stars: 2
 - Forks: 0
 - Open issues: 0
-- Traffic API views: 2
-- Traffic API unique views: 2
-- Traffic API clones: 47
-- Traffic API unique cloners: 34
+- Traffic API views: 4
+- Traffic API unique views: 3
+- Traffic API clones: 64
+- Traffic API unique cloners: 45
 
 ## Email Feedback
 
@@ -51,3 +51,4 @@ Current Zenodo snapshot as of 2026-05-27:
 | 2026-05-26 | Metrics | Snapshot | Zenodo views increased to 4; downloads remain 0. GitHub unchanged at 2 stars, 0 forks, 0 issues. | Continue monitoring; hold outreach until PsyArXiv approval. |
 | 2026-05-26 | Metrics | Snapshot | GitHub traffic API backfilled 2 views and 47 clones from 34 unique cloners; stars remain 2 and issues remain 0. | Continue monitoring; investigate only if clone traffic produces issues or reproducibility questions. |
 | 2026-05-27 | Metrics | Snapshot | Zenodo views increased to 5; downloads remain 0. GitHub unchanged at 2 stars, 0 forks, 0 issues, 2 views, and 47 clones. PsyArXiv still non-public. | Continue monitoring; hold outreach until PsyArXiv approval. |
+| 2026-05-27 | Metrics | Snapshot | GitHub traffic increased to 4 views and 64 clones from 45 unique cloners; stars remain 2 and issues remain 0. Zenodo API returned a temporary 504 timeout, so the last confirmed Zenodo value remains 5 views and 0 downloads. | Continue monitoring; hold outreach until PsyArXiv approval. |

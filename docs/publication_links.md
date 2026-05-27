@@ -31,14 +31,15 @@ Last checked: 2026-05-27, Asia/Shanghai.
 | GitHub | stars | 2 |
 | GitHub | forks | 0 |
 | GitHub | open issues | 0 |
-| GitHub traffic API | views | 2 |
-| GitHub traffic API | unique views | 2 |
-| GitHub traffic API | clones | 47 |
-| GitHub traffic API | unique cloners | 34 |
+| GitHub traffic API | views | 4 |
+| GitHub traffic API | unique views | 3 |
+| GitHub traffic API | clones | 64 |
+| GitHub traffic API | unique cloners | 45 |
 
 Notes:
 
 - Zenodo views may include author-side checks.
+- Zenodo API returned a temporary 504 timeout during the latest check; the Zenodo values above are the last confirmed values.
 - GitHub traffic can lag after a repository is made public.
 - PsyArXiv metrics are not meaningful while the preprint remains pending.
 

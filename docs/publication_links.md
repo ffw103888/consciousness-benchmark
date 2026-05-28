@@ -26,8 +26,8 @@ Last checked: 2026-05-27, Asia/Shanghai.
 |---|---:|---:|
 | Zenodo | views | 5 |
 | Zenodo | unique views | 5 |
-| Zenodo | downloads | 0 |
-| Zenodo | unique downloads | 0 |
+| Zenodo | downloads | 9 |
+| Zenodo | unique downloads | 5 |
 | GitHub | stars | 2 |
 | GitHub | forks | 0 |
 | GitHub | open issues | 0 |

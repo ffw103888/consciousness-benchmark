@@ -15,7 +15,6 @@ The project studies how internal proxy measures can be checked against independe
 ## Paper And Materials
 
 - Zenodo record: [10.5281/zenodo.20372255](https://doi.org/10.5281/zenodo.20372255)
-- PsyArXiv preprint: submitted for moderation; the link will be added after acceptance.
 - Main manuscript: [`docs/paper/submission/measurement_validation_submission.pdf`](docs/paper/submission/measurement_validation_submission.pdf)
 - Supplementary materials: [`docs/paper/submission/measurement_validation_supplementary.pdf`](docs/paper/submission/measurement_validation_supplementary.pdf)
 - Submission package: [`docs/paper/measurement_validation_submission_package.zip`](docs/paper/measurement_validation_submission_package.zip)

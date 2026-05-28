@@ -15,7 +15,6 @@
 ## 论文与材料
 
 - Zenodo 记录：[10.5281/zenodo.20372255](https://doi.org/10.5281/zenodo.20372255)
-- PsyArXiv 预印本：已提交审核，通过后会补充链接。
 - 主论文 PDF：[`docs/paper/submission/measurement_validation_submission.pdf`](docs/paper/submission/measurement_validation_submission.pdf)
 - 补充材料 PDF：[`docs/paper/submission/measurement_validation_supplementary.pdf`](docs/paper/submission/measurement_validation_supplementary.pdf)
 - 投稿包：[`docs/paper/measurement_validation_submission_package.zip`](docs/paper/measurement_validation_submission_package.zip)

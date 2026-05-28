@@ -1,19 +1,19 @@
 # Paper 1 Publication Links
 
-Last checked: 2026-05-27, Asia/Shanghai.
+Last checked: 2026-05-28, Asia/Shanghai.
 
 ## Status
 
 - Zenodo: public
 - GitHub repository: public
 - GitHub release: public
-- PsyArXiv: pending moderation
+- PsyArXiv: not used for this release; moderation declined the submission under its author-eligibility policy for this topic
 
 ## Preprint And Archive
 
 - Zenodo record: https://doi.org/10.5281/zenodo.20372255
-- PsyArXiv pending page: https://osf.io/preprints/psyarxiv/vdhgu_v1
-- PsyArXiv DOI: pending moderator approval
+- PsyArXiv moderation page: https://osf.io/preprints/psyarxiv/vdhgu_v1
+- PsyArXiv DOI: none
 
 ## Code And Data
 
@@ -39,9 +39,9 @@ Last checked: 2026-05-27, Asia/Shanghai.
 Notes:
 
 - Zenodo views may include author-side checks.
-- Zenodo API returned a temporary 504 timeout during the latest check; the Zenodo values above are the last confirmed values.
 - GitHub traffic can lag after a repository is made public.
-- PsyArXiv metrics are not meaningful while the preprint remains pending.
+- Zenodo DOI is the canonical public preprint/archive DOI for this release.
+- The PsyArXiv decision is recorded here only for audit continuity; it is not treated as a scientific review of the manuscript.
 
 ## Release Files
 
@@ -66,10 +66,10 @@ Current public DOI:
 - Zenodo publication date: 2026-05-25
 - GitHub public release date: 2026-05-25
 - PsyArXiv submission date: 2026-05-25
+- PsyArXiv moderation decision date: 2026-05-28
 
 ## Follow-Up Tasks
 
-- Add PsyArXiv DOI after moderator approval.
-- Add PsyArXiv link to `README.md` and `CITATION.cff` after approval.
-- Add GitHub and PsyArXiv related links to Zenodo metadata after approval.
-- Send personalized notification emails only after PsyArXiv is public.
+- Use Zenodo DOI as the canonical preprint/archive link.
+- Send personalized notification emails with Zenodo and GitHub links only.
+- Continue monitoring Zenodo, GitHub, and public indexing/citation signals.

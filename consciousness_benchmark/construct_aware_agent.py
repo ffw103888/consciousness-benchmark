@@ -13,11 +13,21 @@ from consciousness_benchmark.constructs.mind_runtime import (
     ConstructGroundedMindRuntimeReport,
     run_construct_grounded_mind_runtime_tick,
 )
-from consciousness_benchmark.simple_persistent_agent import SimplePersistentAgent
+from consciousness_benchmark.simple_persistent_agent import (
+    REFLECTION_FILENAME,
+    SimplePersistentAgent,
+)
 
 
 CONSTRUCT_LEDGER_FILENAME = "construct_state_ledger.jsonl"
 UNCERTAINTY_PAUSE_THRESHOLD = 0.85
+INTERNAL_AGENT_FILES = frozenset(
+    {
+        "autobiographical_memory.jsonl",
+        REFLECTION_FILENAME,
+        CONSTRUCT_LEDGER_FILENAME,
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -114,6 +124,45 @@ class ConstructAwareAgent(SimplePersistentAgent):
         self.last_runtime_report: ConstructGroundedMindRuntimeReport | None = None
         self.last_construct_summary: ConstructStateSummary | None = None
         self.construct_state_history: dict[int, dict[str, Any]] = {}
+        self._reflect_steps = 0
+
+    def _filter_workspace_files(self, files: list[str]) -> list[str]:
+        return sorted(name for name in files if name not in INTERNAL_AGENT_FILES)
+
+    def _slim_perception_for_memory(self, perception: dict[str, Any]) -> dict[str, Any]:
+        slim = dict(perception)
+        slim["workspace_files"] = self._filter_workspace_files(
+            list(perception.get("workspace_files", []))
+        )
+        if "global_workspace_state" in slim:
+            slim["global_workspace_state"] = {
+                "goal_count": slim["global_workspace_state"].get("goal_count"),
+                "active_percept_count": len(
+                    slim["global_workspace_state"].get("active_percepts", [])
+                ),
+            }
+        if "self_model_state" in slim:
+            slim["self_model_state"] = {
+                "reference_self_constructs": slim["self_model_state"].get(
+                    "reference_self_constructs", []
+                )
+            }
+        if "active_goals" in slim:
+            slim["active_goals"] = [
+                {"goal_id": goal.get("goal_id"), "goal_type": goal.get("goal_type")}
+                for goal in slim.get("active_goals", [])[:3]
+            ]
+        return slim
+
+    def _build_intention_hints(self, perception: dict[str, Any]) -> str:
+        hints = super()._build_intention_hints(perception)
+        if self._reflect_steps >= 1 and not self._agent_created_files(perception):
+            extra = (
+                "Hints:\n"
+                "- You already reflected once; prefer write thoughts.txt <summary> next.\n\n"
+            )
+            return extra + hints
+        return hints
 
     def run_mind_runtime_tick(self) -> ConstructGroundedMindRuntimeReport:
         report = run_construct_grounded_mind_runtime_tick(asset_dirs=[self.workspace])
@@ -148,10 +197,8 @@ class ConstructAwareAgent(SimplePersistentAgent):
             proposals.append(
                 "write thoughts.txt I integrated construct-runtime goals with sandbox exploration"
             )
-        for goal in report.goals[:3]:
-            if goal.goal_type.startswith("prepare_"):
-                proposals.append("reflect")
-                break
+        elif self._reflect_steps == 0 and len(self.explored_files) >= 3:
+            proposals.append("reflect")
         if not proposals:
             proposals.append("explore")
         return proposals
@@ -166,6 +213,7 @@ class ConstructAwareAgent(SimplePersistentAgent):
             tick_id=f"tick_{self.step_count}",
         )
         self.last_construct_summary = summary
+        basic["workspace_files"] = self._filter_workspace_files(basic["workspace_files"])
         return {
             **basic,
             "construct_state": summary.to_dict(),
@@ -180,6 +228,8 @@ class ConstructAwareAgent(SimplePersistentAgent):
 
     def generate_intention(self, perception: dict[str, Any]) -> str:
         uncertainty = float(perception.get("uncertainty_level", 0.0) or 0.0)
+        if self._reflect_steps >= 2:
+            return "rest"
         if uncertainty >= self.uncertainty_threshold:
             self._log(
                 f"High uncertainty ({uncertainty:.2f}); preferring reflect before new action"
@@ -201,7 +251,7 @@ class ConstructAwareAgent(SimplePersistentAgent):
             f"- written files: {sorted(self.written_files)}\n"
             f"- uncertainty: {uncertainty:.2f}\n"
             f"- active goals: {json.dumps(perception.get('active_goals', [])[:3], ensure_ascii=False)}\n"
-            f"- construct self model: {json.dumps(perception.get('self_model_state', {}), ensure_ascii=False)}\n\n"
+            f"- reference self constructs: {perception.get('self_model_state', {}).get('reference_self_constructs', [])}\n\n"
             f"{self._build_intention_hints(perception)}"
             "Construct-runtime proposed intentions:\n"
             + "\n".join(f"- {item}" for item in proposals)
@@ -211,8 +261,16 @@ class ConstructAwareAgent(SimplePersistentAgent):
         return parse_agent_intention(raw)
 
     def execute_action(self, intention: str) -> dict[str, Any]:
+        parts = intention.strip().split(maxsplit=1)
+        if parts and parts[0].lower() == "read" and len(parts) > 1:
+            target = parts[1].strip()
+            if target in INTERNAL_AGENT_FILES:
+                intention = "write thoughts.txt summarizing construct-aware exploration so far"
+
         pre_summary = self.last_construct_summary
         outcome = super().execute_action(intention)
+        if outcome.get("action") == "reflect":
+            self._reflect_steps += 1
         basic = super().perceive()
         report = self.run_mind_runtime_tick()
         post_uncertainty = self.estimate_uncertainty(basic, report)
@@ -228,6 +286,9 @@ class ConstructAwareAgent(SimplePersistentAgent):
         return outcome
 
     def record_memory(self, entry: dict[str, Any]) -> None:
+        perception = entry.get("perception")
+        if isinstance(perception, dict):
+            entry = {**entry, "perception": self._slim_perception_for_memory(perception)}
         enriched = {
             **entry,
             "construct_summary": (
@@ -262,13 +323,23 @@ def talk_to_agent(
         raise FileNotFoundError(f"Missing agent memory: {memory_file}")
 
     recent_lines = memory_file.read_text(encoding="utf-8").splitlines()[-8:]
-    recent = [json.loads(line) for line in recent_lines if line.strip()]
     reflections = (
         reflection_file.read_text(encoding="utf-8") if reflection_file.exists() else ""
     )
+    recent = [json.loads(line) for line in recent_lines if line.strip()]
+    digest = [
+        {
+            "step": row.get("step"),
+            "intention": row.get("intention"),
+            "action": (row.get("outcome") or {}).get("action"),
+            "filename": (row.get("outcome") or {}).get("filename"),
+            "construct_summary": row.get("construct_summary"),
+        }
+        for row in recent
+    ]
     context = {
-        "recent_memory": recent,
-        "reflections_excerpt": reflections[-2000:],
+        "recent_memory": digest,
+        "reflections_excerpt": reflections[-1200:],
         "question": question,
     }
 
@@ -282,6 +353,7 @@ def talk_to_agent(
     from consciousness_benchmark.constructs.local_llm import (
         DEFAULT_PERSISTENT_AGENT_MODEL,
         OllamaAdapter,
+        extract_reflection_narrative,
         extract_visible_llm_response,
     )
 
@@ -297,9 +369,12 @@ def talk_to_agent(
             "You are a read-only interpreter of a bounded cognitive agent ledger. "
             "Never mutate files or claim subjective consciousness."
         ),
-        options={"temperature": 0.2, "num_predict": 512},
+        options={"temperature": 0.2, "num_predict": 1024},
     )
-    return extract_visible_llm_response(result.response_text)
+    final = str(result.raw.get("response") or "")
+    if final.strip():
+        return extract_visible_llm_response(final)
+    return extract_reflection_narrative(result.response_text, final_response=final)
 
 
 def main() -> None:

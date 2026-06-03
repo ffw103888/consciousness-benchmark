@@ -201,6 +201,21 @@ class SimplePersistentAgent:
         raw = self.call_llm(user_prompt, system=AGENT_SYSTEM_PROMPT)
         return parse_agent_intention(raw)
 
+    def _recent_experience_digest(self, n: int = 5) -> list[dict[str, Any]]:
+        digest: list[dict[str, Any]] = []
+        for entry in self.read_recent_memory(n):
+            outcome = entry.get("outcome") or {}
+            digest.append(
+                {
+                    "step": entry.get("step"),
+                    "intention": entry.get("intention"),
+                    "action": outcome.get("action"),
+                    "success": outcome.get("success"),
+                    "filename": outcome.get("filename"),
+                }
+            )
+        return digest
+
     def execute_action(self, intention: str) -> dict[str, Any]:
         parts = intention.strip().split(maxsplit=1)
         if not parts or parts[0].startswith("ERROR:"):
@@ -246,7 +261,7 @@ class SimplePersistentAgent:
             }
 
         if action_type == "reflect":
-            recent = self.read_recent_memory(n=5)
+            recent = self._recent_experience_digest(n=5)
             if self.dry_run or self.llm_client is None:
                 reflection = (
                     f"I completed {len(recent)} recent steps. "

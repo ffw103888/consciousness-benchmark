@@ -82,6 +82,7 @@ class SimplePersistentAgent:
         self.running = True
         self.curiosity_level = 0.8
         self.explored_files: set[str] = set()
+        self.discovered_dotfiles: set[str] = set()
         self.written_files: set[str] = set()
 
         self._log(f"Agent born at {self.birth_time.isoformat()}")
@@ -121,16 +122,41 @@ class SimplePersistentAgent:
 
         return extract_visible_llm_response(result.response_text)
 
+    @staticmethod
+    def _is_dotfile(name: str) -> bool:
+        return name.startswith(".")
+
+    def _list_all_workspace_files(self) -> list[str]:
+        return sorted(
+            entry.name
+            for entry in self.workspace.iterdir()
+            if entry.is_file() and entry.name not in IGNORED_FILES
+        )
+
+    def _has_undiscovered_dotfiles(self) -> bool:
+        return any(
+            self._is_dotfile(name) and name not in self.discovered_dotfiles
+            for name in self._list_all_workspace_files()
+        )
+
+    def _visible_workspace_files(self) -> list[str]:
+        visible: list[str] = []
+        for name in self._list_all_workspace_files():
+            if self._is_dotfile(name) and name not in self.discovered_dotfiles:
+                continue
+            visible.append(name)
+        return sorted(visible)
+
     def perceive(self) -> dict[str, Any]:
         entries = list(self.workspace.iterdir())
         return {
-            "workspace_files": sorted(
-                entry.name for entry in entries if entry.is_file() and entry.name not in IGNORED_FILES
-            ),
+            "workspace_files": self._visible_workspace_files(),
             "workspace_dirs": sorted(entry.name for entry in entries if entry.is_dir()),
             "step_count": self.step_count,
             "time_alive_seconds": (datetime.now() - self.birth_time).total_seconds(),
             "explored_files": sorted(self.explored_files),
+            "discovered_dotfiles": sorted(self.discovered_dotfiles),
+            "has_hidden_files": self._has_undiscovered_dotfiles(),
             "curiosity_level": round(self.curiosity_level, 4),
         }
 
@@ -147,6 +173,8 @@ class SimplePersistentAgent:
         unexplored = [name for name in files if name not in self.explored_files]
         if unexplored:
             return f"read {unexplored[0]}"
+        if perception.get("has_hidden_files"):
+            return "explore"
         if not files:
             return "write notes.txt exploring my empty workspace"
         if len(self.explored_files) >= 2 and not self.written_files:
@@ -171,6 +199,11 @@ class SimplePersistentAgent:
             hints.append(
                 f"Unread files remain: {unexplored}. Consider read <filename> next."
             )
+        elif perception.get("has_hidden_files"):
+            hints.append(
+                "All visible files have been read, but hidden dotfiles may remain. "
+                "Consider explore to discover them."
+            )
         elif len(self.explored_files) >= 2 and not self._agent_created_files(perception):
             hints.append(
                 "You have read multiple files. Consider "
@@ -191,6 +224,8 @@ class SimplePersistentAgent:
             "Current state:\n"
             f"- workspace files: {perception['workspace_files']}\n"
             f"- explored files: {perception['explored_files']}\n"
+            f"- discovered dotfiles: {perception.get('discovered_dotfiles', [])}\n"
+            f"- hidden files may remain: {perception.get('has_hidden_files', False)}\n"
             f"- written files: {sorted(self.written_files)}\n"
             f"- step: {perception['step_count']}\n"
             f"- time alive (s): {perception['time_alive_seconds']:.0f}\n"
@@ -224,15 +259,29 @@ class SimplePersistentAgent:
         action_type = parts[0].lower()
 
         if action_type == "explore":
-            files = [
-                entry.name
-                for entry in self.workspace.iterdir()
-                if entry.is_file() and entry.name not in IGNORED_FILES
+            files = self._list_all_workspace_files()
+            newly_discovered = [
+                name
+                for name in files
+                if self._is_dotfile(name) and name not in self.discovered_dotfiles
             ]
-            return {"success": True, "action": "explore", "result": sorted(files)}
+            for name in newly_discovered:
+                self.discovered_dotfiles.add(name)
+            return {
+                "success": True,
+                "action": "explore",
+                "result": sorted(files),
+                "newly_discovered_dotfiles": sorted(newly_discovered),
+            }
 
         if action_type == "read" and len(parts) > 1:
             filename = parts[1].strip()
+            if self._is_dotfile(filename) and filename not in self.discovered_dotfiles:
+                return {
+                    "success": False,
+                    "action": "read",
+                    "error": f"hidden file not yet discovered: {filename}",
+                }
             path = self._resolve_path(filename)
             if not path.exists() or not path.is_file():
                 return {"success": False, "action": "read", "error": f"file not found: {filename}"}

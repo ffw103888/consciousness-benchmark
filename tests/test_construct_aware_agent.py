@@ -7,7 +7,9 @@ import pytest
 
 from consciousness_benchmark.construct_aware_agent import (
     ConstructAwareAgent,
+    build_agent_memory_narrative,
     compute_construct_state_delta,
+    summarize_agent_memory_fallback,
     summarize_construct_state,
     talk_to_agent,
 )
@@ -79,3 +81,44 @@ def test_talk_to_agent_dry_run(workspace: Path) -> None:
 
     assert "dry-run" in answer.lower()
     assert "Question received" in answer
+
+
+def test_reflect_cap_forces_rest_after_two_reflects(workspace: Path) -> None:
+    agent = ConstructAwareAgent(workspace, verbose=False, dry_run=True)
+    agent._reflect_steps = 2
+    perception = agent.perceive()
+
+    assert agent.generate_intention(perception) == "rest"
+
+
+def test_talk_to_agent_fallback_summary(workspace: Path) -> None:
+    agent = ConstructAwareAgent(workspace, verbose=False, dry_run=True)
+    agent.live(max_steps=3, step_interval=0)
+    for _ in range(5):
+        agent.record_memory(
+            {
+                "perception": agent.perceive(),
+                "intention": "rest",
+                "outcome": {"success": True, "action": "rest"},
+            }
+        )
+        agent.step_count += 1
+
+    recent = agent.read_recent_memory(n=20)
+    answer = summarize_agent_memory_fallback(
+        recent,
+        question="你做了什么？学到了什么？",
+    )
+
+    assert "读取" in answer or "read" in answer.lower()
+
+
+def test_build_agent_memory_narrative(workspace: Path) -> None:
+    agent = ConstructAwareAgent(workspace, verbose=False, dry_run=True)
+    agent.live(max_steps=2, step_interval=0)
+    recent = agent.read_recent_memory(n=2)
+
+    narrative = build_agent_memory_narrative(recent)
+
+    assert "step 0" in narrative
+    assert "action=" in narrative

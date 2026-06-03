@@ -613,10 +613,47 @@ def _is_meta_planning_line(text: str) -> bool:
     if not stripped or stripped in {"*", "**"}:
         return True
     lower = stripped.lower()
+    if len(stripped) < 12 and not any(ch in stripped for ch in ("。", "？", "！")):
+        return True
     if lower.startswith(("thinking process", "*wait", "analyze the", "determine the", "let's check")):
+        return True
+    if lower in {
+        "maintain objective tone",
+        "let's go with",
+        "be concise",
+        "answer the operator question",
+    }:
+        return True
+    if lower.startswith(("does it claim", "*critique", "critique:", "the memory says")):
         return True
     if re.match(r"^\d+\.\s+\*?", stripped):
         return True
     if re.match(r"^\d+\.\s+(analyze|determine|draft|check|verify)\b", lower):
         return True
     return False
+
+
+def extract_talk_answer(text: str, *, final_response: str = "") -> str:
+    """Extract a direct operator-facing answer from a thinking-model response."""
+    final = extract_visible_llm_response(final_response).strip()
+    candidates: list[str] = []
+    if final:
+        candidates.extend(
+            part.strip()
+            for part in re.split(r"\n\s*\n", final)
+            if part.strip()
+        )
+    visible = extract_visible_llm_response(text).strip()
+    if visible:
+        candidates.append(visible)
+    candidates.extend(line.strip() for line in text.splitlines() if line.strip())
+
+    for candidate in reversed(candidates):
+        if _is_meta_planning_line(candidate):
+            continue
+        head = candidate.split(maxsplit=1)[0].lower().rstrip(".,:;")
+        if head in _ACTION_PREFIXES:
+            continue
+        if len(candidate) >= 12 or any(ch in candidate for ch in ("。", "？", "！")):
+            return candidate
+    return final or visible or text.strip()

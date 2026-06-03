@@ -45,11 +45,26 @@ def test_perception(temp_workspace: Path) -> None:
 def test_action_explore(temp_workspace: Path) -> None:
     agent = SimplePersistentAgent(temp_workspace, verbose=False, dry_run=True)
     (temp_workspace / "file1.txt").write_text("test", encoding="utf-8")
+    (temp_workspace / ".hidden.txt").write_text("secret", encoding="utf-8")
 
     outcome = agent.execute_action("explore")
 
     assert outcome["success"]
     assert "file1.txt" in outcome["result"]
+    assert ".hidden.txt" in outcome["result"]
+    assert ".hidden.txt" in outcome["newly_discovered_dotfiles"]
+
+
+def test_perception_hides_dotfiles_until_explore(temp_workspace: Path) -> None:
+    agent = SimplePersistentAgent(temp_workspace, verbose=False, dry_run=True)
+    (temp_workspace / "visible.txt").write_text("ok", encoding="utf-8")
+    (temp_workspace / ".hidden.txt").write_text("secret", encoding="utf-8")
+
+    perception = agent.perceive()
+
+    assert "visible.txt" in perception["workspace_files"]
+    assert ".hidden.txt" not in perception["workspace_files"]
+    assert perception["has_hidden_files"] is True
 
 
 def test_action_read(temp_workspace: Path) -> None:
@@ -133,3 +148,10 @@ def test_extract_reflection_prefers_final_response() -> None:
 def test_extract_reflection_skips_meta_planning() -> None:
     text = "Thinking Process:\n*Wait, let's check constraints\nI explored three files."
     assert extract_reflection_narrative(text).startswith("I explored")
+
+
+def test_extract_talk_answer_skips_meta_fragments() -> None:
+    from consciousness_benchmark.constructs.local_llm import extract_talk_answer
+
+    raw = "Thinking Process:\nMaintain objective tone\n我读取了 hint.txt 并探索了工作区。"
+    assert "hint.txt" in extract_talk_answer(raw, final_response="Maintain objective tone")

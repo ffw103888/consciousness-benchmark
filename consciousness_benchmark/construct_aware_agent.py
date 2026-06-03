@@ -193,6 +193,8 @@ class ConstructAwareAgent(SimplePersistentAgent):
         ]
         if unexplored:
             proposals.append(f"read {unexplored[0]}")
+        if perception.get("has_hidden_files"):
+            proposals.append("explore")
         if not self._agent_created_files(perception) and len(self.explored_files) >= 2:
             proposals.append(
                 "write thoughts.txt I integrated construct-runtime goals with sandbox exploration"
@@ -248,6 +250,8 @@ class ConstructAwareAgent(SimplePersistentAgent):
             "Current state:\n"
             f"- workspace files: {perception['workspace_files']}\n"
             f"- explored files: {perception['explored_files']}\n"
+            f"- discovered dotfiles: {perception.get('discovered_dotfiles', [])}\n"
+            f"- hidden files may remain: {perception.get('has_hidden_files', False)}\n"
             f"- written files: {sorted(self.written_files)}\n"
             f"- uncertainty: {uncertainty:.2f}\n"
             f"- active goals: {json.dumps(perception.get('active_goals', [])[:3], ensure_ascii=False)}\n"
@@ -309,6 +313,101 @@ class ConstructAwareAgent(SimplePersistentAgent):
                 handle.write(json.dumps(ledger_entry, ensure_ascii=False) + "\n")
 
 
+def build_agent_memory_narrative(recent: list[dict[str, Any]]) -> str:
+    """Render recent agent memory rows as a compact audit narrative."""
+    lines: list[str] = []
+    for row in recent:
+        step = row.get("step")
+        intention = row.get("intention")
+        outcome = row.get("outcome") or {}
+        action = outcome.get("action")
+        filename = outcome.get("filename")
+        content = outcome.get("content")
+        reflection = outcome.get("reflection")
+        summary = row.get("construct_summary") or {}
+        uncertainty = summary.get("uncertainty_level")
+
+        parts = [f"step {step}: intention={intention!r}, action={action!r}"]
+        if filename:
+            parts.append(f"file={filename!r}")
+        if isinstance(content, str) and content.strip():
+            excerpt = content.strip().replace("\n", " ")[:120]
+            parts.append(f"content={excerpt!r}")
+        if isinstance(reflection, str) and reflection.strip():
+            parts.append(f"reflection={reflection.strip()[:120]!r}")
+        if uncertainty is not None:
+            parts.append(f"uncertainty={uncertainty}")
+        lines.append("; ".join(parts))
+    return "\n".join(lines)
+
+
+def summarize_agent_memory_fallback(
+    recent: list[dict[str, Any]],
+    *,
+    question: str,
+) -> str:
+    """Deterministic read-only summary when the talk LLM output is unusable."""
+    reads: list[str] = []
+    writes: list[str] = []
+    reflections: list[str] = []
+    actions: list[str] = []
+
+    for row in recent:
+        outcome = row.get("outcome") or {}
+        action = outcome.get("action")
+        filename = outcome.get("filename")
+        if action == "read" and filename:
+            reads.append(str(filename))
+            content = outcome.get("content")
+            if isinstance(content, str) and content.strip():
+                reads[-1] = f"{filename} ({content.strip()[:80]})"
+        elif action == "write" and filename:
+            writes.append(str(filename))
+        elif action == "explore":
+            discovered = outcome.get("newly_discovered_dotfiles") or []
+            if discovered:
+                actions.append("探索发现：" + "、".join(str(name) for name in discovered))
+        elif action == "reflect":
+            reflection = outcome.get("reflection")
+            if isinstance(reflection, str) and reflection.strip():
+                reflections.append(reflection.strip()[:160])
+        elif action:
+            actions.append(str(action))
+
+    use_chinese = any("\u4e00" <= ch <= "\u9fff" for ch in question)
+
+    if use_chinese:
+        parts: list[str] = []
+        if reads:
+            parts.append("我读取了：" + "；".join(reads))
+        if writes:
+            parts.append("我写入：" + "、".join(writes))
+        if reflections:
+            parts.append("反思摘录：" + " ".join(reflections[:2]))
+        if actions:
+            parts.append("其他动作：" + "、".join(sorted(set(actions))))
+        if not parts:
+            return "记忆中没有可总结的动作。"
+        if any(token in question for token in ("秘密", "隐藏", "发现")):
+            secret_reads = [item for item in reads if item.startswith(".") or "secret" in item.lower()]
+            if secret_reads:
+                return f"我发现了隐藏内容：{'；'.join(secret_reads)}"
+        if any(token in question for token in ("做了什么", "做了什么", "学到")):
+            return "。".join(parts)
+        return "。".join(parts)
+
+    parts_en: list[str] = []
+    if reads:
+        parts_en.append("I read: " + "; ".join(reads))
+    if writes:
+        parts_en.append("I wrote: " + ", ".join(writes))
+    if reflections:
+        parts_en.append("Reflection excerpt: " + " ".join(reflections[:2]))
+    if not parts_en:
+        return "No actionable steps were recorded in recent memory."
+    return " ".join(parts_en)
+
+
 def talk_to_agent(
     workspace: Path,
     *,
@@ -322,26 +421,19 @@ def talk_to_agent(
     if not memory_file.exists():
         raise FileNotFoundError(f"Missing agent memory: {memory_file}")
 
-    recent_lines = memory_file.read_text(encoding="utf-8").splitlines()[-8:]
+    all_rows = [json.loads(line) for line in memory_file.read_text(encoding="utf-8").splitlines() if line.strip()]
+    meaningful = [
+        row
+        for row in all_rows
+        if (row.get("outcome") or {}).get("action")
+        in {"read", "write", "explore", "reflect"}
+    ]
+    recent = meaningful[-12:] if meaningful else all_rows[-8:]
     reflections = (
         reflection_file.read_text(encoding="utf-8") if reflection_file.exists() else ""
     )
-    recent = [json.loads(line) for line in recent_lines if line.strip()]
-    digest = [
-        {
-            "step": row.get("step"),
-            "intention": row.get("intention"),
-            "action": (row.get("outcome") or {}).get("action"),
-            "filename": (row.get("outcome") or {}).get("filename"),
-            "construct_summary": row.get("construct_summary"),
-        }
-        for row in recent
-    ]
-    context = {
-        "recent_memory": digest,
-        "reflections_excerpt": reflections[-1200:],
-        "question": question,
-    }
+    narrative = build_agent_memory_narrative(recent)
+    fallback = summarize_agent_memory_fallback(recent, question=question)
 
     if dry_run:
         last_intention = recent[-1].get("intention") if recent else "unknown"
@@ -353,28 +445,52 @@ def talk_to_agent(
     from consciousness_benchmark.constructs.local_llm import (
         DEFAULT_PERSISTENT_AGENT_MODEL,
         OllamaAdapter,
-        extract_reflection_narrative,
-        extract_visible_llm_response,
+        extract_talk_answer,
     )
 
     adapter = OllamaAdapter(timeout_seconds=120.0)
     result = adapter.generate(
         model=llm_model or DEFAULT_PERSISTENT_AGENT_MODEL,
         prompt=(
-            "Answer the operator question using only the agent memory excerpt. "
-            "Do not claim consciousness. Be concise.\n\n"
-            f"Context JSON:\n{json.dumps(context, ensure_ascii=False, indent=2)}"
+            "Answer the operator question using ONLY the agent memory excerpt below.\n"
+            "Write 2-4 complete sentences in the same language as the question.\n"
+            "Do not output planning, bullet lists, or meta instructions.\n"
+            "Do not claim consciousness.\n\n"
+            f"Question:\n{question}\n\n"
+            f"Recent agent memory:\n{narrative}\n\n"
+            f"Reflection excerpt:\n{reflections[-800:] or '(none)'}\n"
         ),
         system=(
-            "You are a read-only interpreter of a bounded cognitive agent ledger. "
-            "Never mutate files or claim subjective consciousness."
+            "You summarize a bounded cognitive agent's recent ledger for an external operator. "
+            "Reply with the final answer only."
         ),
         options={"temperature": 0.2, "num_predict": 1024},
     )
     final = str(result.raw.get("response") or "")
-    if final.strip():
-        return extract_visible_llm_response(final)
-    return extract_reflection_narrative(result.response_text, final_response=final)
+    answer = extract_talk_answer(result.response_text, final_response=final)
+    use_chinese = any("\u4e00" <= ch <= "\u9fff" for ch in question)
+    if use_chinese and not any("\u4e00" <= ch <= "\u9fff" for ch in answer):
+        return fallback
+    if _talk_answer_is_usable(answer):
+        return answer
+    return fallback
+
+
+def _talk_answer_is_usable(answer: str) -> bool:
+    cleaned = answer.strip()
+    if len(cleaned) < 8:
+        return False
+    from consciousness_benchmark.constructs.local_llm import _is_meta_planning_line
+
+    if _is_meta_planning_line(cleaned):
+        return False
+    lower = cleaned.lower()
+    if "claim consciousness" in lower or "critique:" in lower or lower.startswith("does it "):
+        return False
+    head = cleaned.split(maxsplit=1)[0].lower().rstrip(".,:;")
+    if head in {"explore", "read", "write", "reflect", "rest"}:
+        return False
+    return True
 
 
 def main() -> None:

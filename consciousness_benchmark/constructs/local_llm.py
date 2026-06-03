@@ -120,9 +120,14 @@ class OllamaGenerateResult:
 
     @classmethod
     def from_dict(cls, payload: dict[str, Any]) -> "OllamaGenerateResult":
+        response_text = str(payload.get("response") or "")
+        if not response_text.strip():
+            thinking = payload.get("thinking")
+            if isinstance(thinking, str) and thinking.strip():
+                response_text = thinking
         return cls(
             model=str(payload.get("model") or ""),
-            response_text=str(payload.get("response") or ""),
+            response_text=response_text,
             done=bool(payload.get("done", False)),
             created_at=str(payload.get("created_at") or ""),
             total_duration=_optional_int(payload.get("total_duration")),
@@ -562,3 +567,56 @@ def parse_agent_intention(text: str) -> str:
     if head in _ACTION_PREFIXES:
         return first_line
     return "rest"
+
+
+def extract_reflection_narrative(text: str, *, final_response: str = "") -> str:
+    """Extract a short first-person reflection, preferring the final model response."""
+    final = extract_visible_llm_response(final_response).strip()
+    if final:
+        paragraphs = [part.strip() for part in re.split(r"\n\s*\n", final) if part.strip()]
+        for paragraph in reversed(paragraphs):
+            if not _is_meta_planning_line(paragraph):
+                return paragraph
+        if not _is_meta_planning_line(final):
+            return final
+
+    draft_match = re.search(
+        r"Drafting(?:\s*-\s*Attempt\s*\d+)?:\s*(.+)",
+        text,
+        flags=re.DOTALL | re.IGNORECASE,
+    )
+    if draft_match:
+        draft_body = draft_match.group(1)
+        draft_body = re.split(r"\*\s*Count:|\n\s*\d+\.\s+\*\*", draft_body, maxsplit=1)[0]
+        sentences: list[str] = []
+        for part in re.split(r"(?<=[.!?])\s+", draft_body):
+            part = part.strip()
+            if part.lower().startswith(("i ", "i'm ", "i’ve ", "i have ", "my ")):
+                if not _is_meta_planning_line(part):
+                    sentences.append(part)
+        if sentences:
+            return " ".join(sentences[:4])
+
+    visible = extract_visible_llm_response(text).strip()
+    if visible and not _is_meta_planning_line(visible):
+        return visible
+
+    for line in reversed([line.strip() for line in text.splitlines() if line.strip()]):
+        if line.lower().startswith(("i ", "i'm ", "i’ve ", "i have ", "my ")):
+            if not _is_meta_planning_line(line):
+                return line
+    return final or visible or text.strip()
+
+
+def _is_meta_planning_line(text: str) -> bool:
+    stripped = text.strip()
+    if not stripped or stripped in {"*", "**"}:
+        return True
+    lower = stripped.lower()
+    if lower.startswith(("thinking process", "*wait", "analyze the", "determine the", "let's check")):
+        return True
+    if re.match(r"^\d+\.\s+\*?", stripped):
+        return True
+    if re.match(r"^\d+\.\s+(analyze|determine|draft|check|verify)\b", lower):
+        return True
+    return False

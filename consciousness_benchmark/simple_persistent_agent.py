@@ -12,6 +12,7 @@ from consciousness_benchmark.constructs.local_llm import (
     DEFAULT_PERSISTENT_AGENT_MODEL,
     OllamaAdapter,
     OllamaAdapterError,
+    extract_reflection_narrative,
     extract_visible_llm_response,
     parse_agent_intention,
 )
@@ -36,6 +37,7 @@ Available actions (reply with ONE line only):
 MEMORY_FILENAME = "autobiographical_memory.jsonl"
 REFLECTION_FILENAME = "reflections.txt"
 IGNORED_FILES = frozenset({MEMORY_FILENAME, REFLECTION_FILENAME})
+DEMO_FILES = frozenset({"welcome.txt", "mystery.txt", "instructions.txt"})
 
 
 class LLMClient(Protocol):
@@ -80,6 +82,7 @@ class SimplePersistentAgent:
         self.running = True
         self.curiosity_level = 0.8
         self.explored_files: set[str] = set()
+        self.written_files: set[str] = set()
 
         self._log(f"Agent born at {self.birth_time.isoformat()}")
         self._log(f"Workspace: {self.workspace.resolve()}")
@@ -96,7 +99,13 @@ class SimplePersistentAgent:
             raise ValueError(f"path escapes workspace: {filename}")
         return candidate
 
-    def call_llm(self, prompt: str, *, system: str | None = None) -> str:
+    def call_llm(
+        self,
+        prompt: str,
+        *,
+        system: str | None = None,
+        num_predict: int = 512,
+    ) -> str:
         if self.dry_run or self.llm_client is None:
             return self._heuristic_intention(self.perceive())
 
@@ -105,7 +114,7 @@ class SimplePersistentAgent:
                 model=self.llm_model,
                 prompt=prompt,
                 system=system or AGENT_SYSTEM_PROMPT,
-                options={"temperature": 0.2, "num_predict": 256},
+                options={"temperature": 0.2, "num_predict": num_predict},
             )
         except OllamaAdapterError as exc:
             return f"ERROR: {exc}"
@@ -140,9 +149,38 @@ class SimplePersistentAgent:
             return f"read {unexplored[0]}"
         if not files:
             return "write notes.txt exploring my empty workspace"
+        if len(self.explored_files) >= 2 and not self.written_files:
+            return "write thoughts.txt I explored the workspace and noted what I learned"
         if self.step_count % 5 == 4:
             return "reflect"
         return "explore"
+
+    def _agent_created_files(self, perception: dict[str, Any]) -> list[str]:
+        return [
+            name
+            for name in perception["workspace_files"]
+            if name not in DEMO_FILES and name not in IGNORED_FILES
+        ]
+
+    def _build_intention_hints(self, perception: dict[str, Any]) -> str:
+        hints: list[str] = []
+        unexplored = [
+            name for name in perception["workspace_files"] if name not in self.explored_files
+        ]
+        if unexplored:
+            hints.append(
+                f"Unread files remain: {unexplored}. Consider read <filename> next."
+            )
+        elif len(self.explored_files) >= 2 and not self._agent_created_files(perception):
+            hints.append(
+                "You have read multiple files. Consider "
+                "write thoughts.txt <short summary of what you learned>."
+            )
+        elif len(self.explored_files) >= 2 and self.written_files:
+            hints.append("Consider reflect to summarize your experience.")
+        if hints:
+            return "Hints:\n- " + "\n- ".join(hints) + "\n\n"
+        return ""
 
     def generate_intention(self, perception: dict[str, Any]) -> str:
         self.curiosity_level = self.assess_curiosity(perception)
@@ -153,9 +191,11 @@ class SimplePersistentAgent:
             "Current state:\n"
             f"- workspace files: {perception['workspace_files']}\n"
             f"- explored files: {perception['explored_files']}\n"
+            f"- written files: {sorted(self.written_files)}\n"
             f"- step: {perception['step_count']}\n"
             f"- time alive (s): {perception['time_alive_seconds']:.0f}\n"
             f"- curiosity: {self.curiosity_level:.2f}\n\n"
+            f"{self._build_intention_hints(perception)}"
             "Reply with ONE action line only."
         )
         raw = self.call_llm(user_prompt, system=AGENT_SYSTEM_PROMPT)
@@ -197,6 +237,7 @@ class SimplePersistentAgent:
             filename, content = write_parts[0], write_parts[1]
             path = self._resolve_path(filename)
             path.write_text(content, encoding="utf-8")
+            self.written_files.add(filename)
             return {
                 "success": True,
                 "action": "write",
@@ -212,13 +253,22 @@ class SimplePersistentAgent:
                     f"I explored {sorted(self.explored_files)} and remain curious."
                 )
             else:
-                reflection = self.call_llm(
-                    "Reflect briefly in first person on recent experience:\n"
-                    f"{json.dumps(recent, ensure_ascii=False, indent=2)}",
+                raw = self.llm_client.generate(
+                    model=self.llm_model,
+                    prompt=(
+                        "Reflect briefly in first person on recent experience:\n"
+                        f"{json.dumps(recent, ensure_ascii=False, indent=2)}"
+                    ),
                     system=(
                         "You are reflecting as a bounded cognitive agent. "
-                        "Use first person, 3-5 sentences, no consciousness claims."
+                        "Use first person, 3-5 sentences, no consciousness claims. "
+                        "Output only the reflection text with no planning or numbered lists."
                     ),
+                    options={"temperature": 0.2, "num_predict": 1024},
+                )
+                reflection = extract_reflection_narrative(
+                    raw.response_text,
+                    final_response=str(raw.raw.get("response") or ""),
                 )
             with self.reflection_file.open("a", encoding="utf-8") as handle:
                 handle.write(f"\n=== Reflection at step {self.step_count} ===\n")

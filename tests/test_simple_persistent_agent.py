@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from consciousness_benchmark.constructs.local_llm import (
+    extract_reflection_narrative,
     extract_visible_llm_response,
     parse_agent_intention,
 )
@@ -118,3 +119,17 @@ def test_parse_agent_intention_from_thinking_model() -> None:
         "reflect"
     )
     assert parse_agent_intention(raw) == "reflect"
+
+
+def test_extract_reflection_prefers_final_response() -> None:
+    thinking = "Thinking Process:\n1. Analyze\nDrafting - Attempt 1:\nI read files."
+    final = "I explored the workspace and learned that curiosity matters."
+    assert (
+        extract_reflection_narrative(thinking, final_response=final)
+        == final
+    )
+
+
+def test_extract_reflection_skips_meta_planning() -> None:
+    text = "Thinking Process:\n*Wait, let's check constraints\nI explored three files."
+    assert extract_reflection_narrative(text).startswith("I explored")

@@ -38,3 +38,6 @@ consciousness-benchmark = "consciousness_benchmark.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["consciousness_benchmark*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -109,6 +109,16 @@
 
 **推荐并行（方案 C）**：
 - 主线：启动 Stage 0 环境骨架（本文件 → 实现 issue）
-- 副线：用 `test_reflection_quality.py` + showcase_v4 live 观察反思改善
+- 副线：用 `test_reflection_quality.py` + showcase live 观察反思改善
 
 若 Stage 0 网格环境 3 天内无法产出可审计里程碑，则优先巩固 Phase A showcase 文档与 CI 隔离，再重启 Phase B。
+
+## 决策记录（2026-06-03，live 后）
+
+| 选项 | 结论 |
+|------|------|
+| 先补 showcase 叙事 | **否** — `run_showcase_surprise_live` 已验收惊讶；step 4 反思质量分 1.0 |
+| 直接 Phase B Stage 0 | **是** — 第 1 周交付 `DevelopmentalStageRunner` + 2D grid 最小环境 |
+| 反思副线 | 维持 `test_reflection_quality.py`；不阻塞 Stage 0 |
+
+**已执行 live**：`sandbox/showcase_surprise_live_fresh`；`content_surprises` 与 weather 变化叙事均已出现。

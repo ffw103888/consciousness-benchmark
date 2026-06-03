@@ -51,6 +51,8 @@ def main() -> None:
 
     apply_surprise_change(ws)
     print("\n=== Mutation applied: Day 6: Raining ===\n")
+    # Reflect cap can block investigation after Phase A; reset so surprise triggers read.
+    agent._reflect_steps = 0
 
     perception = agent.perceive()
     print("content_surprises:", perception.get("content_surprises"))

@@ -84,6 +84,23 @@ python scripts/run_showcase_surprise_live.py --fresh --workspace sandbox/showcas
 
 验收点：输出中出现 `content_surprises: ['weather.txt']`、`content_changed=True`、`Day 6: Raining`。
 
+脚本在突变后会重置 `_reflect_steps`，避免 Phase A 已触发 reflect cap 导致突变后只能 `rest`。
+
+### Live 验收记录（2026-06-03，`qwen3.5:9b`）
+
+```bash
+python scripts/run_showcase_surprise_live.py --fresh --workspace sandbox/showcase_surprise_live_fresh --interval 1.0
+```
+
+| 检查项 | 结果 |
+|--------|------|
+| `content_surprises: ['weather.txt']` | ✅ |
+| 突变后 `read weather.txt` + `content_changed=True` | ✅（需 reflect cap 重置；见脚本） |
+| `reflections.txt` 叙事质量分 | step 4 ≈ **1.0**（提及 weather 内容变化） |
+| step 5 叙事 | ⚠️ 截断（Qwen 不稳定） |
+
+**Phase B 决策（并行方案 C）**：反思 live 已达标展示；**主线进入 Phase B Stage 0 骨架**，不再阻塞于 showcase 补拍。
+
 **惊讶（可选：两步 CLI，需 `agent_state.json` 持久化）**：
 
 ```bash

@@ -14,6 +14,7 @@ from consciousness_benchmark.constructs.mind_runtime import (
     run_construct_grounded_mind_runtime_tick,
 )
 from consciousness_benchmark.simple_persistent_agent import (
+    AGENT_STATE_FILENAME,
     REFLECTION_FILENAME,
     SimplePersistentAgent,
 )
@@ -26,6 +27,7 @@ INTERNAL_AGENT_FILES = frozenset(
         "autobiographical_memory.jsonl",
         REFLECTION_FILENAME,
         CONSTRUCT_LEDGER_FILENAME,
+        AGENT_STATE_FILENAME,
     }
 )
 
@@ -125,6 +127,22 @@ class ConstructAwareAgent(SimplePersistentAgent):
         self.last_construct_summary: ConstructStateSummary | None = None
         self.construct_state_history: dict[int, dict[str, Any]] = {}
         self._reflect_steps = 0
+        if self.agent_state_file.exists():
+            try:
+                saved = json.loads(self.agent_state_file.read_text(encoding="utf-8"))
+                if isinstance(saved, dict):
+                    self._reflect_steps = int(saved.get("reflect_steps", 0) or 0)
+            except (json.JSONDecodeError, OSError):
+                pass
+
+    def _agent_state_to_dict(self) -> dict[str, Any]:
+        payload = super()._agent_state_to_dict()
+        payload["reflect_steps"] = self._reflect_steps
+        return payload
+
+    def _apply_agent_state(self, payload: dict[str, Any]) -> None:
+        super()._apply_agent_state(payload)
+        self._reflect_steps = int(payload.get("reflect_steps", 0) or 0)
 
     def _filter_workspace_files(self, files: list[str]) -> list[str]:
         return sorted(name for name in files if name not in INTERNAL_AGENT_FILES)
@@ -178,9 +196,18 @@ class ConstructAwareAgent(SimplePersistentAgent):
         unexplored = [name for name in files if name not in self.explored_files]
         curiosity_gap = 1.0 - float(perception.get("curiosity_level", 0.0) or 0.0)
         unexplored_ratio = len(unexplored) / max(1, len(files))
+        surprise_count = len(perception.get("content_surprises") or [])
+        surprise_pressure = min(0.4, 0.2 * surprise_count)
         goal_pressure = min(1.0, len(report.goals) / 8.0) * 0.25
         percept_pressure = min(1.0, len(report.active_percepts) / 10.0) * 0.15
-        return min(1.0, curiosity_gap * 0.45 + unexplored_ratio * 0.35 + goal_pressure + percept_pressure)
+        return min(
+            1.0,
+            curiosity_gap * 0.4
+            + unexplored_ratio * 0.3
+            + surprise_pressure
+            + goal_pressure
+            + percept_pressure,
+        )
 
     def _propose_construct_intentions(
         self,
@@ -188,6 +215,10 @@ class ConstructAwareAgent(SimplePersistentAgent):
         report: ConstructGroundedMindRuntimeReport,
     ) -> list[str]:
         proposals: list[str] = []
+        surprises = perception.get("content_surprises") or []
+        if surprises:
+            proposals.append(f"read {surprises[0]}")
+            proposals.append("reflect")
         unexplored = [
             name for name in perception["workspace_files"] if name not in self.explored_files
         ]
@@ -252,6 +283,7 @@ class ConstructAwareAgent(SimplePersistentAgent):
             f"- explored files: {perception['explored_files']}\n"
             f"- discovered dotfiles: {perception.get('discovered_dotfiles', [])}\n"
             f"- hidden files may remain: {perception.get('has_hidden_files', False)}\n"
+            f"- content surprises: {perception.get('content_surprises', [])}\n"
             f"- written files: {sorted(self.written_files)}\n"
             f"- uncertainty: {uncertainty:.2f}\n"
             f"- active goals: {json.dumps(perception.get('active_goals', [])[:3], ensure_ascii=False)}\n"

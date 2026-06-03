@@ -116,11 +116,19 @@ python -m consciousness_benchmark mind-talk-to-agent \
 3. **惊讶阈值**：`test_expectation_violation` 在 dry-run 下验证读通与不确定性下限，未强制 +0.2 跃升（构念不确定性公式与「人类惊讶」非一一对应）。
 4. **社会承诺**：尚未实现多 Agent 场景。
 
+## 方向 A 跟进（2026-06-03 晚）
+
+详见 [phase_a3_direction_a_20260603.md](./phase_a3_direction_a_20260603.md)：
+
+- **A1**：反思叙事提取 v2 + `build_reflection_fallback()`
+- **A2**：`content_surprises` + `test_surprise_triggers_investigation`
+- **A3**：`scripts/setup_phase_a3_showcases.py` → curiosity / surprise / autonomy
+
 ## 建议下一步
 
-1. 再跑 2–3 个 curated 场景（pattern 违背、缺失文件反思），写入本目录附录。
+1. Live 跑通惊讶场景：`python scripts/run_showcase_surprise_live.py --fresh`（或两步 CLI + `agent_state.json`）。
 2. 可选：为 live 测试加 `@pytest.mark.live` 与 CI 分离。
-3. 积累足够「惊艳时刻」后再评估是否启动 Phase B。
+3. 完成上述后再评估是否启动 Phase B。
 
 ## 相关文件
 

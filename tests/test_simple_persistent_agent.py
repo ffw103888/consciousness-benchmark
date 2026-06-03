@@ -9,6 +9,7 @@ from consciousness_benchmark.constructs.local_llm import (
     extract_reflection_narrative,
     extract_visible_llm_response,
     parse_agent_intention,
+    reflection_narrative_is_usable,
 )
 from consciousness_benchmark.simple_persistent_agent import (
     MEMORY_FILENAME,
@@ -148,6 +149,43 @@ def test_extract_reflection_prefers_final_response() -> None:
 def test_extract_reflection_skips_meta_planning() -> None:
     text = "Thinking Process:\n*Wait, let's check constraints\nI explored three files."
     assert extract_reflection_narrative(text).startswith("I explored")
+
+
+def test_content_surprise_detected_after_file_change(temp_workspace: Path) -> None:
+    agent = SimplePersistentAgent(temp_workspace, verbose=False, dry_run=True)
+    (temp_workspace / "pattern.txt").write_text("AAAA", encoding="utf-8")
+    agent.execute_action("read pattern.txt")
+    (temp_workspace / "pattern.txt").write_text("BBBB", encoding="utf-8")
+
+    perception = agent.perceive()
+
+    assert "pattern.txt" in perception["content_surprises"]
+    assert agent.generate_intention(perception) == "read pattern.txt"
+
+
+def test_reflection_fallback_mentions_hidden_discovery(temp_workspace: Path) -> None:
+    agent = SimplePersistentAgent(temp_workspace, verbose=False, dry_run=True)
+    agent.execute_action("explore")
+    agent.execute_action("read .secret.txt")
+    recent = [
+        {
+            "outcome": {
+                "action": "explore",
+                "newly_discovered_dotfiles": [".secret.txt"],
+            }
+        },
+        {
+            "outcome": {
+                "action": "read",
+                "filename": ".secret.txt",
+                "content": "Secret inside",
+            }
+        },
+    ]
+    reflection = agent.build_reflection_fallback(recent)
+
+    assert "hidden file" in reflection.lower() or "discovered" in reflection.lower()
+    assert reflection_narrative_is_usable(reflection)
 
 
 def test_extract_talk_answer_skips_meta_fragments() -> None:

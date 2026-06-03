@@ -569,16 +569,156 @@ def parse_agent_intention(text: str) -> str:
     return "rest"
 
 
-def extract_reflection_narrative(text: str, *, final_response: str = "") -> str:
-    """Extract a short first-person reflection, preferring the final model response."""
-    final = extract_visible_llm_response(final_response).strip()
+def _is_narrative_sentence(text: str) -> bool:
+    stripped = text.strip()
+    if not stripped or _is_meta_planning_line(stripped):
+        return False
+    lower = stripped.lower()
+    if any(
+        marker in lower
+        for marker in (
+            "let's go",
+            "count:",
+            "thinking process",
+            "analyze the",
+            "determine the",
+            "*critique",
+            "maintain objective",
+        )
+    ):
+        return False
+    if any("\u4e00" <= ch <= "\u9fff" for ch in stripped):
+        return len(stripped) >= 8
+    if lower.startswith(("i ", "i'm ", "i’ve ", "i have ", "my ")):
+        return len(stripped) >= 20
+    return any(
+        word in lower
+        for word in (
+            "discovered",
+            "found",
+            "explored",
+            "learned",
+            "hidden",
+            "secret",
+            "changed",
+            "noticed",
+            "read ",
+        )
+    ) and len(stripped) >= 20
+
+
+def _collect_narrative_sentences(text: str) -> list[str]:
+    sentences: list[str] = []
+    for part in re.split(r"(?<=[.!?])\s+|\n+", text):
+        part = part.strip()
+        if _is_narrative_sentence(part):
+            sentences.append(part)
+    return sentences
+
+
+def calculate_reflection_narrative_quality(text: str) -> float:
+    """Score reflection narrative quality in [0, 1]."""
+    cleaned = text.strip()
+    if not cleaned:
+        return 0.0
+    score = 0.0
+    lower = cleaned.lower()
+    if cleaned.startswith(("I ", "I'm ", "I’ve ", "I have ", "My ")) or "我" in cleaned:
+        score += 0.3
+    narrative_verbs = (
+        "discovered",
+        "learned",
+        "found",
+        "explored",
+        "read",
+        "wrote",
+        "reflected",
+        "noticed",
+        "changed",
+        "hidden",
+    )
+    if any(verb in lower for verb in narrative_verbs):
+        score += 0.3
+    meta_markers = (
+        "*",
+        "step ",
+        "wait",
+        "let's",
+        "count:",
+        "check content",
+        "*check",
+        "thinking process",
+    )
+    if not any(marker in lower for marker in meta_markers):
+        score += 0.2
+    if 50 <= len(cleaned) <= 500:
+        score += 0.2
+    return score
+
+
+def reflection_narrative_is_usable(text: str) -> bool:
+    return calculate_reflection_narrative_quality(text) >= 0.6
+
+
+def _extract_summary_paragraph(text: str) -> str:
+    patterns = (
+        r"(?:In summary|Overall|Finally|To summarize),?\s*(.+)",
+        r"总结[：:]\s*(.+)",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.DOTALL | re.IGNORECASE)
+        if not match:
+            continue
+        body = re.split(r"\*\s*Count:|\n\s*\d+\.\s+\*\*", match.group(1), maxsplit=1)[0]
+        sentences = _collect_narrative_sentences(body)
+        if sentences:
+            return " ".join(sentences[:4])
+    return ""
+
+
+def extract_reflection_narrative_smart(
+    text: str,
+    *,
+    final_response: str = "",
+    ollama_result: OllamaGenerateResult | None = None,
+) -> str:
+    """Multi-strategy reflection extraction with quality filtering."""
+    return extract_reflection_narrative(
+        text,
+        final_response=final_response,
+        ollama_result=ollama_result,
+    )
+
+
+def extract_reflection_narrative(
+    text: str,
+    *,
+    final_response: str = "",
+    ollama_result: OllamaGenerateResult | None = None,
+) -> str:
+    """Extract a short first-person reflection, preferring final response over thinking."""
+    response_field = final_response
+    thinking_field = ""
+    if ollama_result is not None:
+        response_field = str(ollama_result.raw.get("response") or "")
+        thinking_value = ollama_result.raw.get("thinking")
+        if isinstance(thinking_value, str):
+            thinking_field = thinking_value
+        if not text.strip() and thinking_field:
+            text = thinking_field
+
+    final = extract_visible_llm_response(response_field).strip()
     if final:
         paragraphs = [part.strip() for part in re.split(r"\n\s*\n", final) if part.strip()]
         for paragraph in reversed(paragraphs):
-            if not _is_meta_planning_line(paragraph):
+            if reflection_narrative_is_usable(paragraph):
                 return paragraph
-        if not _is_meta_planning_line(final):
+        if reflection_narrative_is_usable(final):
             return final
+
+    summary = _extract_summary_paragraph(thinking_field or text)
+    if summary and reflection_narrative_is_usable(summary):
+        return summary
 
     draft_match = re.search(
         r"Drafting(?:\s*-\s*Attempt\s*\d+)?:\s*(.+)",
@@ -586,25 +726,30 @@ def extract_reflection_narrative(text: str, *, final_response: str = "") -> str:
         flags=re.DOTALL | re.IGNORECASE,
     )
     if draft_match:
-        draft_body = draft_match.group(1)
-        draft_body = re.split(r"\*\s*Count:|\n\s*\d+\.\s+\*\*", draft_body, maxsplit=1)[0]
-        sentences: list[str] = []
-        for part in re.split(r"(?<=[.!?])\s+", draft_body):
-            part = part.strip()
-            if part.lower().startswith(("i ", "i'm ", "i’ve ", "i have ", "my ")):
-                if not _is_meta_planning_line(part):
-                    sentences.append(part)
+        draft_body = re.split(r"\*\s*Count:|\n\s*\d+\.\s+\*\*", draft_match.group(1), maxsplit=1)[0]
+        sentences = _collect_narrative_sentences(draft_body)
         if sentences:
             return " ".join(sentences[:4])
 
+    for source in (thinking_field, text):
+        if not source.strip():
+            continue
+        sentences = _collect_narrative_sentences(source)
+        for sentence in reversed(sentences):
+            if reflection_narrative_is_usable(sentence):
+                return sentence
+        if sentences:
+            candidate = " ".join(sentences[-4:])
+            if reflection_narrative_is_usable(candidate):
+                return candidate
+
     visible = extract_visible_llm_response(text).strip()
-    if visible and not _is_meta_planning_line(visible):
+    if reflection_narrative_is_usable(visible):
         return visible
 
     for line in reversed([line.strip() for line in text.splitlines() if line.strip()]):
-        if line.lower().startswith(("i ", "i'm ", "i’ve ", "i have ", "my ")):
-            if not _is_meta_planning_line(line):
-                return line
+        if reflection_narrative_is_usable(line):
+            return line
     return final or visible or text.strip()
 
 
@@ -625,6 +770,8 @@ def _is_meta_planning_line(text: str) -> bool:
     }:
         return True
     if lower.startswith(("does it claim", "*critique", "critique:", "the memory says")):
+        return True
+    if "check content" in lower or "*check" in lower or lower.startswith("* "):
         return True
     if re.match(r"^\d+\.\s+\*?", stripped):
         return True

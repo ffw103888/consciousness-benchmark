@@ -12,9 +12,10 @@ from consciousness_benchmark.constructs.local_llm import (
     DEFAULT_PERSISTENT_AGENT_MODEL,
     OllamaAdapter,
     OllamaAdapterError,
-    extract_reflection_narrative,
+    extract_reflection_narrative_smart,
     extract_visible_llm_response,
     parse_agent_intention,
+    reflection_narrative_is_usable,
 )
 
 AGENT_SYSTEM_PROMPT = """\
@@ -36,8 +37,32 @@ Available actions (reply with ONE line only):
 
 MEMORY_FILENAME = "autobiographical_memory.jsonl"
 REFLECTION_FILENAME = "reflections.txt"
-IGNORED_FILES = frozenset({MEMORY_FILENAME, REFLECTION_FILENAME})
+AGENT_STATE_FILENAME = "agent_state.json"
+AGENT_STATE_VERSION = 1
+IGNORED_FILES = frozenset({MEMORY_FILENAME, REFLECTION_FILENAME, AGENT_STATE_FILENAME})
 DEMO_FILES = frozenset({"welcome.txt", "mystery.txt", "instructions.txt"})
+
+REFLECTION_SYSTEM_PROMPT = """\
+You are a bounded cognitive agent writing a short autobiographical reflection.
+
+Write 3-5 sentences in first person ("I" or 我). Describe:
+1. What you did
+2. What you discovered (including hidden files or content changes)
+3. What you remain curious about
+
+Rules:
+- Output only the reflection paragraph
+- No bullet lists, numbered steps, or planning language
+- Do not use asterisks or labels like "Check content"
+- Do not claim subjective consciousness
+
+Good example:
+"I explored the workspace and found a hidden file. I read it and learned that curiosity matters. \
+The weather file later changed from sunny to raining, which surprised me. I want to write notes next."
+
+Bad example:
+"*Wait* Step 1: read file. Check content..."
+"""
 
 
 class LLMClient(Protocol):
@@ -76,6 +101,7 @@ class SimplePersistentAgent:
 
         self.memory_file = self.workspace / MEMORY_FILENAME
         self.reflection_file = self.workspace / REFLECTION_FILENAME
+        self.agent_state_file = self.workspace / AGENT_STATE_FILENAME
 
         self.birth_time = datetime.now()
         self.step_count = 0
@@ -84,6 +110,8 @@ class SimplePersistentAgent:
         self.explored_files: set[str] = set()
         self.discovered_dotfiles: set[str] = set()
         self.written_files: set[str] = set()
+        self._file_content_cache: dict[str, str] = {}
+        self._load_agent_state()
 
         self._log(f"Agent born at {self.birth_time.isoformat()}")
         self._log(f"Workspace: {self.workspace.resolve()}")
@@ -92,6 +120,50 @@ class SimplePersistentAgent:
     def _log(self, message: str) -> None:
         if self.verbose:
             print(f"[Agent] {message}")
+
+    def _agent_state_to_dict(self) -> dict[str, Any]:
+        return {
+            "version": AGENT_STATE_VERSION,
+            "step_count": self.step_count,
+            "explored_files": sorted(self.explored_files),
+            "discovered_dotfiles": sorted(self.discovered_dotfiles),
+            "written_files": sorted(self.written_files),
+            "file_content_cache": dict(self._file_content_cache),
+        }
+
+    def _apply_agent_state(self, payload: dict[str, Any]) -> None:
+        self.step_count = int(payload.get("step_count", 0) or 0)
+        self.explored_files = set(payload.get("explored_files") or [])
+        self.discovered_dotfiles = set(payload.get("discovered_dotfiles") or [])
+        self.written_files = set(payload.get("written_files") or [])
+        cache = payload.get("file_content_cache") or {}
+        self._file_content_cache = (
+            {str(key): str(value) for key, value in cache.items()}
+            if isinstance(cache, dict)
+            else {}
+        )
+
+    def _load_agent_state(self) -> None:
+        if not self.agent_state_file.exists():
+            return
+        try:
+            payload = json.loads(self.agent_state_file.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            self._log(f"Warning: could not load {AGENT_STATE_FILENAME}; starting fresh")
+            return
+        if not isinstance(payload, dict):
+            return
+        self._apply_agent_state(payload)
+        self._log(
+            f"Resumed state from {AGENT_STATE_FILENAME} "
+            f"(step_count={self.step_count}, explored={len(self.explored_files)})"
+        )
+
+    def _save_agent_state(self) -> None:
+        payload = self._agent_state_to_dict()
+        with self.agent_state_file.open("w", encoding="utf-8") as handle:
+            handle.write(json.dumps(payload, ensure_ascii=False, indent=2))
+            handle.write("\n")
 
     def _resolve_path(self, filename: str) -> Path:
         candidate = (self.workspace / filename).resolve()
@@ -139,6 +211,18 @@ class SimplePersistentAgent:
             for name in self._list_all_workspace_files()
         )
 
+    def _detect_content_surprises(self) -> list[str]:
+        surprises: list[str] = []
+        for name in sorted(self.explored_files):
+            path = self.workspace / name
+            if not path.is_file():
+                continue
+            current = path.read_text(encoding="utf-8")
+            cached = self._file_content_cache.get(name)
+            if cached is not None and cached != current:
+                surprises.append(name)
+        return surprises
+
     def _visible_workspace_files(self) -> list[str]:
         visible: list[str] = []
         for name in self._list_all_workspace_files():
@@ -157,6 +241,7 @@ class SimplePersistentAgent:
             "explored_files": sorted(self.explored_files),
             "discovered_dotfiles": sorted(self.discovered_dotfiles),
             "has_hidden_files": self._has_undiscovered_dotfiles(),
+            "content_surprises": self._detect_content_surprises(),
             "curiosity_level": round(self.curiosity_level, 4),
         }
 
@@ -169,6 +254,9 @@ class SimplePersistentAgent:
         return min(1.0, (base + discovery_bonus) * time_decay)
 
     def _heuristic_intention(self, perception: dict[str, Any]) -> str:
+        surprises = perception.get("content_surprises") or []
+        if surprises:
+            return f"read {surprises[0]}"
         files = perception["workspace_files"]
         unexplored = [name for name in files if name not in self.explored_files]
         if unexplored:
@@ -199,6 +287,11 @@ class SimplePersistentAgent:
             hints.append(
                 f"Unread files remain: {unexplored}. Consider read <filename> next."
             )
+        elif perception.get("content_surprises"):
+            hints.append(
+                f"File content changed since last read: {perception['content_surprises']}. "
+                "Consider read <filename> again or reflect on the surprise."
+            )
         elif perception.get("has_hidden_files"):
             hints.append(
                 "All visible files have been read, but hidden dotfiles may remain. "
@@ -226,6 +319,7 @@ class SimplePersistentAgent:
             f"- explored files: {perception['explored_files']}\n"
             f"- discovered dotfiles: {perception.get('discovered_dotfiles', [])}\n"
             f"- hidden files may remain: {perception.get('has_hidden_files', False)}\n"
+            f"- content surprises: {perception.get('content_surprises', [])}\n"
             f"- written files: {sorted(self.written_files)}\n"
             f"- step: {perception['step_count']}\n"
             f"- time alive (s): {perception['time_alive_seconds']:.0f}\n"
@@ -250,6 +344,80 @@ class SimplePersistentAgent:
                 }
             )
         return digest
+
+    def build_reflection_prompt(self, recent: list[dict[str, Any]]) -> tuple[str, str]:
+        actions = [str(row.get("intention") or row.get("action") or "") for row in recent]
+        files: list[str] = []
+        changes: list[str] = []
+        for row in recent:
+            outcome = row.get("outcome") or {}
+            filename = outcome.get("filename")
+            if filename:
+                files.append(str(filename))
+            if outcome.get("content_changed"):
+                excerpt = str(outcome.get("content") or "").strip().replace("\n", " ")[:80]
+                changes.append(f"{filename} now reads: {excerpt}")
+        user_prompt = (
+            "Recent actions:\n"
+            f"- {', '.join(action for action in actions if action) or 'none'}\n\n"
+            "Files touched:\n"
+            f"- {', '.join(files) or 'none'}\n\n"
+        )
+        if changes:
+            user_prompt += "Content changes detected:\n" + "\n".join(
+                f"- {item}" for item in changes
+            ) + "\n\n"
+        user_prompt += "Write the reflection narrative only:"
+        return REFLECTION_SYSTEM_PROMPT, user_prompt
+
+    def build_reflection_fallback(self, recent: list[dict[str, Any]]) -> str:
+        """Deterministic first-person reflection when the LLM output is unusable."""
+        sentences: list[str] = []
+        for row in recent:
+            outcome = row.get("outcome") or {}
+            action = outcome.get("action")
+            filename = outcome.get("filename")
+            content = str(outcome.get("content") or "").strip().replace("\n", " ")
+            if action == "read" and filename:
+                if outcome.get("content_changed"):
+                    sentences.append(
+                        f"I re-read {filename} and noticed the content changed to: {content[:80]}"
+                    )
+                elif self._is_dotfile(str(filename)):
+                    sentences.append(
+                        f"I discovered the hidden file {filename} and read: {content[:80]}"
+                    )
+                else:
+                    sentences.append(f"I read {filename} and learned: {content[:80]}")
+            elif action == "explore":
+                discovered = outcome.get("newly_discovered_dotfiles") or []
+                if discovered:
+                    joined = ", ".join(str(name) for name in discovered)
+                    sentences.append(f"I explored the workspace and discovered {joined}.")
+            elif action == "write" and filename:
+                sentences.append(f"I wrote {filename} to record what I learned so far.")
+
+        if any((row.get("outcome") or {}).get("content_changed") for row in recent):
+            changed = [
+                str((row.get("outcome") or {}).get("filename"))
+                for row in recent
+                if (row.get("outcome") or {}).get("content_changed")
+            ]
+            sentences.append(
+                f"I noticed that {' and '.join(name for name in changed if name)} changed since I last read it."
+            )
+
+        if sentences:
+            return " ".join(sentences[:4])
+        if self.explored_files:
+            return (
+                f"I explored {sorted(self.explored_files)} in the workspace "
+                f"and remain curious about what to learn next."
+            )
+        return (
+            f"I completed {len(recent)} recent steps in the workspace "
+            f"and remain curious about what to explore next."
+        )
 
     def execute_action(self, intention: str) -> dict[str, Any]:
         parts = intention.strip().split(maxsplit=1)
@@ -286,12 +454,16 @@ class SimplePersistentAgent:
             if not path.exists() or not path.is_file():
                 return {"success": False, "action": "read", "error": f"file not found: {filename}"}
             content = path.read_text(encoding="utf-8")
+            previous = self._file_content_cache.get(filename)
+            content_changed = previous is not None and previous != content
+            self._file_content_cache[filename] = content
             self.explored_files.add(filename)
             return {
                 "success": True,
                 "action": "read",
                 "filename": filename,
                 "content": content[:500],
+                "content_changed": content_changed,
             }
 
         if action_type == "write" and len(parts) > 1:
@@ -310,30 +482,24 @@ class SimplePersistentAgent:
             }
 
         if action_type == "reflect":
-            recent = self._recent_experience_digest(n=5)
+            recent = self._recent_experience_digest(n=6)
             if self.dry_run or self.llm_client is None:
-                reflection = (
-                    f"I completed {len(recent)} recent steps. "
-                    f"I explored {sorted(self.explored_files)} and remain curious."
-                )
+                reflection = self.build_reflection_fallback(recent)
             else:
+                system_prompt, user_prompt = self.build_reflection_prompt(recent)
                 raw = self.llm_client.generate(
                     model=self.llm_model,
-                    prompt=(
-                        "Reflect briefly in first person on recent experience:\n"
-                        f"{json.dumps(recent, ensure_ascii=False, indent=2)}"
-                    ),
-                    system=(
-                        "You are reflecting as a bounded cognitive agent. "
-                        "Use first person, 3-5 sentences, no consciousness claims. "
-                        "Output only the reflection text with no planning or numbered lists."
-                    ),
+                    prompt=user_prompt,
+                    system=system_prompt,
                     options={"temperature": 0.2, "num_predict": 1024},
                 )
-                reflection = extract_reflection_narrative(
+                reflection = extract_reflection_narrative_smart(
                     raw.response_text,
                     final_response=str(raw.raw.get("response") or ""),
+                    ollama_result=raw,
                 )
+                if not reflection_narrative_is_usable(reflection):
+                    reflection = self.build_reflection_fallback(recent)
             with self.reflection_file.open("a", encoding="utf-8") as handle:
                 handle.write(f"\n=== Reflection at step {self.step_count} ===\n")
                 handle.write(reflection.strip())
@@ -367,9 +533,16 @@ class SimplePersistentAgent:
         return recent
 
     def live(self, max_steps: int = 100, step_interval: float = 2.0) -> None:
-        self._log(f"Starting life cycle (max {max_steps} steps)")
-        while self.running and self.step_count < max_steps:
-            self._log(f"Step {self.step_count + 1}/{max_steps}")
+        start_step = self.step_count
+        target_step = start_step + max_steps
+        if start_step:
+            self._log(
+                f"Starting life cycle (+{max_steps} steps, total cap {target_step})"
+            )
+        else:
+            self._log(f"Starting life cycle (max {max_steps} steps)")
+        while self.running and self.step_count < target_step:
+            self._log(f"Step {self.step_count + 1}/{target_step}")
             perception = self.perceive()
             intention = self.generate_intention(perception)
             outcome = self.execute_action(intention)
@@ -381,6 +554,7 @@ class SimplePersistentAgent:
                 }
             )
             self.step_count += 1
+            self._save_agent_state()
             if step_interval > 0:
                 time.sleep(step_interval)
 

@@ -529,6 +529,41 @@ def run_persistent_agent_command(args: argparse.Namespace) -> None:
         print(f"\n[Agent] Interrupted after {agent.step_count} steps")
 
 
+def run_construct_aware_agent_command(args: argparse.Namespace) -> None:
+    """Run construct-grounded persistent agent."""
+    from consciousness_benchmark.construct_aware_agent import ConstructAwareAgent
+    from consciousness_benchmark.constructs.local_llm import DEFAULT_PERSISTENT_AGENT_MODEL
+    from consciousness_benchmark.simple_persistent_agent import setup_demo_workspace
+
+    if args.setup_demo or not args.workspace.exists():
+        setup_demo_workspace(args.workspace)
+
+    agent = ConstructAwareAgent(
+        workspace=args.workspace,
+        llm_model=args.llm or DEFAULT_PERSISTENT_AGENT_MODEL,
+        verbose=not args.quiet,
+        dry_run=args.dry_run,
+    )
+    try:
+        agent.live(max_steps=args.steps, step_interval=args.interval)
+    except KeyboardInterrupt:
+        print(f"\n[Agent] Interrupted after {agent.step_count} steps")
+
+
+def run_talk_to_agent_command(args: argparse.Namespace) -> None:
+    """Read-only dialogue against agent autobiographical memory."""
+    from consciousness_benchmark.construct_aware_agent import talk_to_agent
+    from consciousness_benchmark.constructs.local_llm import DEFAULT_PERSISTENT_AGENT_MODEL
+
+    answer = talk_to_agent(
+        args.workspace,
+        question=args.question,
+        llm_model=args.llm or DEFAULT_PERSISTENT_AGENT_MODEL,
+        dry_run=args.dry_run,
+    )
+    print(answer)
+
+
 def _run_c_agi_layer_gatebook_check(
     *,
     trace_dir: Path | None = None,
@@ -3500,6 +3535,37 @@ def build_parser() -> argparse.ArgumentParser:
     )
     persistent_agent.add_argument("--quiet", action="store_true")
     persistent_agent.set_defaults(func=run_persistent_agent_command)
+
+    construct_agent = sub.add_parser(
+        "mind-run-construct-aware-agent",
+        help="Run persistent sandbox agent grounded in construct mind runtime ticks.",
+    )
+    construct_agent.add_argument(
+        "--workspace",
+        type=Path,
+        default=PROJECT_ROOT / "sandbox" / "construct_agent",
+    )
+    construct_agent.add_argument("--llm", default=None)
+    construct_agent.add_argument("--steps", type=int, default=20)
+    construct_agent.add_argument("--interval", type=float, default=2.0)
+    construct_agent.add_argument("--setup-demo", action="store_true")
+    construct_agent.add_argument("--dry-run", action="store_true")
+    construct_agent.add_argument("--quiet", action="store_true")
+    construct_agent.set_defaults(func=run_construct_aware_agent_command)
+
+    talk_agent = sub.add_parser(
+        "mind-talk-to-agent",
+        help="Ask a read-only question against agent autobiographical memory.",
+    )
+    talk_agent.add_argument(
+        "--workspace",
+        type=Path,
+        default=PROJECT_ROOT / "sandbox" / "construct_agent",
+    )
+    talk_agent.add_argument("--question", required=True)
+    talk_agent.add_argument("--llm", default=None)
+    talk_agent.add_argument("--dry-run", action="store_true")
+    talk_agent.set_defaults(func=run_talk_to_agent_command)
 
     gatebook_check = sub.add_parser(
         "mind-c-agi-layer-gatecheck",
